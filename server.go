@@ -21,7 +21,7 @@ func main() {
 	port := 8081
 
 	secureMiddleware := secure.New(secure.Options{
-		AllowedHosts:         []string{"sandr0\\.tk"},
+		// AllowedHosts:         []string{"sandr0\\.tk"},
 		AllowedHostsAreRegex: false,
 		// HostsProxyHeaders:    []string{"X-Forwarded-Host"},
 		SSLRedirect: false,
