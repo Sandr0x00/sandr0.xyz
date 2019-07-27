@@ -33,7 +33,7 @@ func main() {
 		FrameDeny:             true,
 		ContentTypeNosniff:    true,
 		BrowserXssFilter:      true,
-		ContentSecurityPolicy: "default-src 'self'",
+		ContentSecurityPolicy: "default-src 'self' use.fontawesome.com; font-src 'self' use.fontawesome.com; img-src 'self'; style-src 'self' use.fontawesome.com stackpath.bootstrapcdn.com; script-src 'self' stackpath.bootstrapcdn.com; base-uri 'none'; form-action 'self';",
 		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
 		ReferrerPolicy: "same-origin",
 		FeaturePolicy:  "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; micophone 'none'; notifications 'none';",
