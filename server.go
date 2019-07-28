@@ -24,8 +24,6 @@ func logRequest(handler http.Handler) http.Handler {
 }
 
 func main() {
-	var m *autocert.Manager
-
 	secureMiddleware := secure.New(secure.Options{
 		// AllowedHosts:         []string{"sandr0\\.tk"},
 		AllowedHostsAreRegex: false,
@@ -63,10 +61,10 @@ func main() {
 	http.Handle("/", r)
 
 	if !development {
-		m = &autocert.Manager{
+		m := autocert.Manager{
 			Prompt:     autocert.AcceptTOS,
-			HostPolicy: autocert.HostWhitelist("sandr0.tk"), //Your domain here
-			Cache:      autocert.DirCache("certs"),          //Folder for storing certificates
+			HostPolicy: autocert.HostWhitelist("sandr0.tk"),
+			Cache:      autocert.DirCache("certs"),
 		}
 		server := &http.Server{
 			Addr: ":https",
@@ -74,17 +72,21 @@ func main() {
 				GetCertificate: m.GetCertificate,
 			},
 		}
-		server.ListenAndServeTLS("", "")
+		log.Printf("Serving http/https on https://sandr0.tk")
+		go func() {
+			// serve HTTP, which will redirect automatically to HTTPS
+			h := m.HTTPHandler(nil)
+			log.Fatal(http.ListenAndServe(":http", h))
+		}()
+
+		// serve HTTPS!
+		log.Fatal(server.ListenAndServeTLS("", ""))
 	}
 
 	hostname, _ := os.Hostname()
 	fmt.Printf("Starting server on http://%s\n", hostname)
 	var err error
-	if m != nil {
-		err = http.ListenAndServe(":8081", m.HTTPHandler(nil))
-	} else {
-		err = http.ListenAndServe(":8081", nil)
-	}
+	err = http.ListenAndServe(":8081", nil)
 	if err != nil {
 		log.Fatal(err)
 	}
