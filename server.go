@@ -29,11 +29,12 @@ func main() {
 		AllowedHostsAreRegex: false,
 		// HostsProxyHeaders:    []string{"X-Forwarded-Host"},
 		SSLRedirect: false,
-		// SSLHost:               "ssl.example.com",
+		SSLHost:     "sandro.tk",
 		// SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
 		STSSeconds:            31536000,
 		STSIncludeSubdomains:  true,
 		STSPreload:            true,
+		ForceSTSHeader:        true,
 		FrameDeny:             true,
 		ContentTypeNosniff:    true,
 		BrowserXssFilter:      true,
@@ -47,13 +48,6 @@ func main() {
 	r := mux.NewRouter()
 
 	r.Use(logRequest)
-	// r.Use(secureMiddleware.Handler)
-
-	// shared := r.PathPrefix("/shared").Subrouter()
-	// shared.Handle("/", http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
-
-	// static := r.PathPrefix("/").Subrouter()
-	// static.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir("static"))))
 
 	// no securemiddleware in shared
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
@@ -67,7 +61,7 @@ func main() {
 			Cache:      autocert.DirCache("certs"),
 		}
 		server := &http.Server{
-			Addr: ":https",
+			Addr: ":8443",
 			TLSConfig: &tls.Config{
 				GetCertificate: m.GetCertificate,
 			},
@@ -76,7 +70,7 @@ func main() {
 		go func() {
 			// serve HTTP, which will redirect automatically to HTTPS
 			h := m.HTTPHandler(nil)
-			log.Fatal(http.ListenAndServe(":http", h))
+			log.Fatal(http.ListenAndServe(":8080", h))
 		}()
 
 		// serve HTTPS!
