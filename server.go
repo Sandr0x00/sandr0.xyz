@@ -36,17 +36,24 @@ func main() {
 		ContentSecurityPolicy: "default-src 'self' use.fontawesome.com; font-src 'self' use.fontawesome.com; img-src 'self'; style-src 'self' use.fontawesome.com stackpath.bootstrapcdn.com; script-src 'self' stackpath.bootstrapcdn.com; base-uri 'none'; form-action 'self';",
 		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
 		ReferrerPolicy: "same-origin",
-		FeaturePolicy:  "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; micophone 'none'; notifications 'none';",
+		FeaturePolicy:  "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; microphone 'none'; notifications 'none';",
 		IsDevelopment:  false,
 	})
 
 	r := mux.NewRouter()
 
 	r.Use(logRequest)
-	r.Use(secureMiddleware.Handler)
+	// r.Use(secureMiddleware.Handler)
 
+	// shared := r.PathPrefix("/shared").Subrouter()
+	// shared.Handle("/", http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
+
+	// static := r.PathPrefix("/").Subrouter()
+	// static.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir("static"))))
+
+	// no securemiddleware in shared
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
+	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
 
 	hostname, _ := os.Hostname()
