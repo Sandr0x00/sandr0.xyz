@@ -38,7 +38,7 @@ func main() {
 		FrameDeny:             true,
 		ContentTypeNosniff:    true,
 		BrowserXssFilter:      true,
-		ContentSecurityPolicy: "default-src 'self' use.fontawesome.com; font-src 'self' use.fontawesome.com; img-src 'self'; style-src 'self' use.fontawesome.com stackpath.bootstrapcdn.com; script-src 'self' stackpath.bootstrapcdn.com; base-uri 'none'; form-action 'self';",
+		ContentSecurityPolicy: "default-src 'self' use.fontawesome.com; font-src 'self' use.fontawesome.com; img-src 'self'; style-src 'unsafe-inline' use.fontawesome.com stackpath.bootstrapcdn.com; script-src 'self' stackpath.bootstrapcdn.com; base-uri 'none'; form-action 'self';",
 		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
 		ReferrerPolicy: "same-origin",
 		FeaturePolicy:  "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; microphone 'none'; notifications 'none';",
@@ -57,7 +57,7 @@ func main() {
 	if !development {
 		m := autocert.Manager{
 			Prompt:     autocert.AcceptTOS,
-			HostPolicy: autocert.HostWhitelist("sandr0.tk"),
+			HostPolicy: autocert.HostWhitelist("sandr0.tk", "www.sandr0.tk"),
 			Cache:      autocert.DirCache("certs"),
 		}
 		server := &http.Server{
@@ -78,7 +78,7 @@ func main() {
 	}
 
 	hostname, _ := os.Hostname()
-	fmt.Printf("Starting server on http://%s\n", hostname)
+	fmt.Printf("Starting server on http://%s:8081\n", hostname)
 	var err error
 	err = http.ListenAndServe(":8081", nil)
 	if err != nil {
