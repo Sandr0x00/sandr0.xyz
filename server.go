@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,6 +9,11 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/unrolled/secure"
+	"golang.org/x/crypto/acme/autocert"
+)
+
+const (
+	development = false
 )
 
 func logRequest(handler http.Handler) http.Handler {
@@ -18,7 +24,7 @@ func logRequest(handler http.Handler) http.Handler {
 }
 
 func main() {
-	port := 8081
+	var m *autocert.Manager
 
 	secureMiddleware := secure.New(secure.Options{
 		// AllowedHosts:         []string{"sandr0\\.tk"},
@@ -37,7 +43,7 @@ func main() {
 		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
 		ReferrerPolicy: "same-origin",
 		FeaturePolicy:  "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; microphone 'none'; notifications 'none';",
-		IsDevelopment:  false,
+		IsDevelopment:  development,
 	})
 
 	r := mux.NewRouter()
@@ -56,9 +62,30 @@ func main() {
 	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
 
+	if !development {
+		m = &autocert.Manager{
+			Prompt:     autocert.AcceptTOS,
+			HostPolicy: autocert.HostWhitelist("sandr0.tk"), //Your domain here
+			Cache:      autocert.DirCache("certs"),          //Folder for storing certificates
+		}
+		server := &http.Server{
+			Addr: ":https",
+			TLSConfig: &tls.Config{
+				GetCertificate: m.GetCertificate,
+			},
+		}
+		server.ListenAndServeTLS("", "")
+	}
+
 	hostname, _ := os.Hostname()
-	fmt.Printf("Starting server on http://%s:%d\n", hostname, port)
-	if err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil); err != nil {
+	fmt.Printf("Starting server on http://%s\n", hostname)
+	var err error
+	if m != nil {
+		err = http.ListenAndServe(":8081", m.HTTPHandler(nil))
+	} else {
+		err = http.ListenAndServe(":8081", nil)
+	}
+	if err != nil {
 		log.Fatal(err)
 	}
 }
