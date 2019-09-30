@@ -30,8 +30,6 @@ var serveReverseProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 	// parse the url
 	url, _ := url.Parse("http://localhost:8082")
 
-	log.Printf("%s %s %s\n", url, r.Method, r.URL)
-
 	// create the reverse proxy
 	proxy := httputil.NewSingleHostReverseProxy(url)
 
@@ -51,7 +49,7 @@ func main() {
 		AllowedHostsAreRegex: false,
 		// HostsProxyHeaders:    []string{"X-Forwarded-Host"},
 		SSLRedirect: false,
-		SSLHost:     "sandro.tk",
+		SSLHost:     "sandr0.tk",
 		// SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
 		STSSeconds:           31536000,
 		STSIncludeSubdomains: true,
@@ -66,7 +64,8 @@ func main() {
 			img-src 'self';
 			style-src 'self' 'unsafe-inline' use.fontawesome.com stackpath.bootstrapcdn.com;
 			script-src 'self' 'unsafe-inline' unpkg.com stackpath.bootstrapcdn.com;
-			base-uri 'none'; form-action 'self';
+			base-uri 'none';
+			form-action 'self';
 		`,
 		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
 		ReferrerPolicy: "same-origin",
@@ -80,7 +79,7 @@ func main() {
 
 	// no securemiddleware in shared
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
-	r.PathPrefix("/recipes/").Handler(secureMiddleware.Handler(serveReverseProxy))
+	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", secureMiddleware.Handler(serveReverseProxy)))
 	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
 
