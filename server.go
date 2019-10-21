@@ -66,6 +66,7 @@ func main() {
 			script-src 'self' 'unsafe-inline' unpkg.com stackpath.bootstrapcdn.com;
 			base-uri 'none';
 			form-action 'self';
+			frame-ancestors: 'none';
 		`,
 		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
 		ReferrerPolicy: "same-origin",
