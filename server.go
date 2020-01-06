@@ -12,15 +12,40 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/unrolled/secure"
 	"golang.org/x/crypto/acme/autocert"
+	"strings"
+	"sort"
 )
 
 const (
-	development = false
+	development = true
 )
+
+var lastHead = ""
 
 func logRequest(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Printf("%s %s %s\n", r.RemoteAddr, r.Method, r.URL)
+		urlString := fmt.Sprintf("%s", r.URL)
+		if !strings.HasSuffix(urlString, ".jpg") && !strings.HasSuffix(urlString, ".png") && !strings.HasSuffix(urlString, ".css") && !strings.HasSuffix(urlString, ".svg") && !strings.HasSuffix(urlString, ".ico") && !strings.HasSuffix(urlString, ".js") {
+			head := ""
+			var keys []string
+			for k := range r.Header {
+				if k == "If-None-Match" || k == "If-Modified-Since" || k == "Upgrade-Insecure-Requests" {
+					continue
+				}
+				keys = append(keys, k)
+			}
+			sort.Strings(keys)
+
+			for _, k := range keys {
+				head += fmt.Sprintf("\n    %s %s", k, strings.Join(r.Header[k], ", "))
+			}
+			if lastHead == head {
+				head = ""
+			} else {
+				lastHead = head
+			}
+			log.Printf("%s %s %s %s%s\n", r.RemoteAddr, r.Method, r.Proto, r.URL, head)
+		}
 		handler.ServeHTTP(w, r)
 	})
 }
@@ -61,6 +86,12 @@ var seriesProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	proxy.ServeHTTP(w, r)
 })
 
+func Redirect(target string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, target, http.StatusMovedPermanently)
+	})
+}
+
 
 func main() {
 	secureMiddleware := secure.New(secure.Options{
@@ -98,8 +129,11 @@ func main() {
 	r.Use(logRequest)
 
 	// no securemiddleware in shared
+	// r.HandlerFunc
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
+	r.Handle("/recipes", Redirect("/recipes/"))
 	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", secureMiddleware.Handler(recipeProxy)))
+	r.Handle("/series", Redirect("/series/"))
 	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", secureMiddleware.Handler(seriesProxy)))
 	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
