@@ -14,10 +14,11 @@ import (
 	"golang.org/x/crypto/acme/autocert"
 	"strings"
 	"sort"
+	"io/ioutil"
 )
 
 const (
-	development = false
+	development = true
 )
 
 var lastHead = ""
@@ -98,6 +99,24 @@ func Redirect(target string) http.Handler {
 	})
 }
 
+var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	cal, ok := r.URL.Query()["cal"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if os.Getenv("CAL_UUID") == cal[0] {
+		res, err := http.Get(fmt.Sprintf("https://%s:%s@cal.hxp.io/", os.Getenv("CAL_USER"), os.Getenv("CAL_PW")))
+		if err != nil {
+			log.Fatal(err)
+		}
+		robots, err := ioutil.ReadAll(res.Body)
+		res.Body.Close()
+		fmt.Fprint(w, robots)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+})
 
 func main() {
 	secureMiddleware := secure.New(secure.Options{
@@ -140,6 +159,7 @@ func main() {
 	r.Handle("/recipes", Redirect("/recipes/"))
 	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", secureMiddleware.Handler(recipeProxy)))
 	r.Handle("/series", Redirect("/series/"))
+	r.Handle("/cal", calProxy)
 	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", secureMiddleware.Handler(seriesProxy)))
 	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
