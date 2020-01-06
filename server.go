@@ -110,9 +110,9 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		robots, err := ioutil.ReadAll(res.Body)
+		body, err := ioutil.ReadAll(res.Body)
 		res.Body.Close()
-		fmt.Fprint(w, robots)
+		fmt.Fprint(w, fmt.Sprintf("%s", body))
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
