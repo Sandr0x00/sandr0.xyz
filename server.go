@@ -17,7 +17,7 @@ import (
 )
 
 const (
-	development = true
+	development = false
 )
 
 var lastHead = ""
