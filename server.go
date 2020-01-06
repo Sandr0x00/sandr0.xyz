@@ -25,11 +25,18 @@ var lastHead = ""
 func logRequest(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlString := fmt.Sprintf("%s", r.URL)
+		if !strings.HasPrefix(urlString, "/?") {
+			head := ""
+			for k, v := range r.Header {
+				head += fmt.Sprintf("\n    %s %s", k, strings.Join(v, ", "))
+			}
+			log.Printf("%s %s %s %s%s\n", r.RemoteAddr, r.Method, r.Proto, r.URL, head)
+		}
 		if !strings.HasSuffix(urlString, ".jpg") && !strings.HasSuffix(urlString, ".png") && !strings.HasSuffix(urlString, ".css") && !strings.HasSuffix(urlString, ".svg") && !strings.HasSuffix(urlString, ".ico") && !strings.HasSuffix(urlString, ".js") {
 			head := ""
 			var keys []string
 			for k := range r.Header {
-				if k == "If-None-Match" || k == "If-Modified-Since" || k == "Upgrade-Insecure-Requests" {
+				if k == "If-None-Match" || k == "If-Modified-Since" || k == "Upgrade-Insecure-Requests" || k == "Accept" {
 					continue
 				}
 				keys = append(keys, k)
