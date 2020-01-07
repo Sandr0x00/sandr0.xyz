@@ -17,10 +17,6 @@ import (
 	"io/ioutil"
 )
 
-const (
-	development = false
-)
-
 var lastHead = ""
 
 func logRequest(handler http.Handler) http.Handler {
@@ -112,6 +108,8 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		}
 		body, err := ioutil.ReadAll(res.Body)
 		res.Body.Close()
+		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
+		w.Header().Add("Connection", "close")
 		fmt.Fprint(w, fmt.Sprintf("%s", body))
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
@@ -146,7 +144,7 @@ func main() {
 		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
 		ReferrerPolicy: "same-origin",
 		FeaturePolicy:  "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; microphone 'none'; notifications 'none';",
-		IsDevelopment:  development,
+		IsDevelopment:  os.Getenv("DEV") == "true",
 	})
 
 	r := mux.NewRouter()
@@ -164,7 +162,7 @@ func main() {
 	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
 
-	if !development {
+	if os.Getenv("DEV") != "true" {
 		m := autocert.Manager{
 			Prompt:     autocert.AcceptTOS,
 			HostPolicy: autocert.HostWhitelist("sandr0.tk", "www.sandr0.tk"),
