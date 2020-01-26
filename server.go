@@ -2,20 +2,33 @@ package main
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
+	"html"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
 
+	"io/ioutil"
+	"sort"
+	"strings"
+
 	"github.com/gorilla/mux"
 	"github.com/unrolled/secure"
 	"golang.org/x/crypto/acme/autocert"
-	"strings"
-	"sort"
-	"io/ioutil"
 )
+
+type Users struct {
+	Users []User `json:"users"`
+}
+
+type User struct {
+	Name     string   `json:"name"`
+	Password string   `json:"password"`
+	Files    []string `json:"files"`
+}
 
 var lastHead = ""
 
@@ -116,6 +129,56 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	}
 })
 
+func auth(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		// Authenticated users
+		jsonFile, err := os.Open("secured.json")
+		// if we os.Open returns an error then handle it
+		if err != nil {
+			fmt.Println(err)
+		}
+		// defer the closing of our jsonFile so that we can parse it later on
+		defer jsonFile.Close()
+
+		// read our opened jsonFile as a byte array.
+		byteValue, _ := ioutil.ReadAll(jsonFile)
+
+		// we initialize our Users array
+		var users Users
+
+		// we unmarshal our byteArray which contains our
+		// jsonFile's content into 'users' which we defined above
+		json.Unmarshal(byteValue, &users)
+
+		user, pass, _ := r.BasicAuth()
+
+		// we iterate through every user within our users array and
+		// print out the user Type, their name, and their facebook url
+		// as just an example
+		for _, valid := range users.Users {
+			if valid.Name == user && valid.Password == pass {
+				requestFile := html.EscapeString(r.URL.Path)
+				for _, curFile := range valid.Files {
+					if requestFile == curFile {
+						w.Header().Set("Content-Type", "application/octet-stream; charset=utf-8")
+						w.Header().Set("Content-Disposition", "attachment;")
+						handler.ServeHTTP(w, r)
+					}
+				}
+				for _, curFile := range valid.Files {
+					fmt.Fprintf(w, `<a href="%v">%v</a><br>`, curFile, curFile)
+				}
+				return
+			}
+		}
+
+		w.Header().Set("WWW-Authenticate", `Basic`)
+		http.Error(w, "Unauthorized.", 401)
+		return
+	})
+}
+
 func main() {
 	secureMiddleware := secure.New(secure.Options{
 		// AllowedHosts:         []string{"sandr0\\.tk"},
@@ -135,8 +198,8 @@ func main() {
 			default-src 'self' use.fontawesome.com;
 			font-src 'self' use.fontawesome.com;
 			img-src 'self';
-			style-src 'self' 'unsafe-inline' use.fontawesome.com stackpath.bootstrapcdn.com;
-			script-src 'self' 'unsafe-inline' unpkg.com stackpath.bootstrapcdn.com;
+			style-src 'self' 'unsafe-inline' use.fontawesome.com;
+			script-src 'self' 'unsafe-inline';
 			base-uri 'none';
 			form-action 'self';
 			frame-ancestors: 'none';
@@ -153,6 +216,8 @@ func main() {
 
 	// no securemiddleware in shared
 	// r.HandlerFunc
+	r.Handle("/secured", Redirect("/secured/"))
+	r.PathPrefix("/secured/").Handler(http.StripPrefix("/secured/", secureMiddleware.Handler(auth(http.FileServer(http.Dir("secured"))))))
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
 	r.Handle("/recipes", Redirect("/recipes/"))
 	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", secureMiddleware.Handler(recipeProxy)))
