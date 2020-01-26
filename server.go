@@ -210,6 +210,11 @@ func main() {
 		IsDevelopment:  os.Getenv("DEV") == "true",
 	})
 
+	err := ioutil.WriteFile("pid", []byte(fmt.Sprintf("%d", os.Getpid())), 0644)
+	if err != nil {
+		panic(err)
+	}
+
 	r := mux.NewRouter()
 
 	r.Use(logRequest)
@@ -252,7 +257,6 @@ func main() {
 
 	hostname, _ := os.Hostname()
 	fmt.Printf("Starting server on http://%s:8081\n", hostname)
-	var err error
 	err = http.ListenAndServe(":8081", nil)
 	if err != nil {
 		log.Fatal(err)
