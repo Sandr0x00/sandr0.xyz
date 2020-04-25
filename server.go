@@ -102,6 +102,24 @@ var seriesProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	proxy.ServeHTTP(w, r)
 })
 
+// Serve a reverse proxy for a given url
+var phpProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// parse the url
+	url, _ := url.Parse("http://localhost:8088")
+
+	// create the reverse proxy
+	proxy := httputil.NewSingleHostReverseProxy(url)
+
+	// Update the headers to allow for SSL redirection
+	r.URL.Host = url.Host
+	r.URL.Scheme = url.Scheme
+	r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
+	r.Host = url.Host
+
+	// Note that ServeHttp is non blocking and uses a go routine under the hood
+	proxy.ServeHTTP(w, r)
+})
+
 func Redirect(target string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, target, http.StatusMovedPermanently)
@@ -226,9 +244,11 @@ func main() {
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
 	r.Handle("/recipes", Redirect("/recipes/"))
 	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", secureMiddleware.Handler(recipeProxy)))
+	r.Handle("/php", Redirect("/php/"))
+	r.PathPrefix("/php/").Handler(http.StripPrefix("/php/", secureMiddleware.Handler(phpProxy)))
 	r.Handle("/series", Redirect("/series/"))
-	r.Handle("/cal", calProxy)
 	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", secureMiddleware.Handler(seriesProxy)))
+	r.Handle("/cal", calProxy)
 	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
 	http.Handle("/", r)
 
