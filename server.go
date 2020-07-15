@@ -199,11 +199,11 @@ func auth(handler http.Handler) http.Handler {
 
 func main() {
 	secureMiddleware := secure.New(secure.Options{
-		// AllowedHosts:         []string{"sandr0\\.tk"},
+		// AllowedHosts:         []string{"sandr0\\.xyz"},
 		AllowedHostsAreRegex: false,
 		// HostsProxyHeaders:    []string{"X-Forwarded-Host"},
 		SSLRedirect: false,
-		SSLHost:     "sandr0.tk",
+		SSLHost:     "sandr0.xyz",
 		// SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
 		STSSeconds:           31536000,
 		STSIncludeSubdomains: true,
@@ -223,9 +223,9 @@ func main() {
 			frame-ancestors: 'none';
 		`,
 		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
-		ReferrerPolicy: "same-origin",
-		FeaturePolicy:  "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; microphone 'none'; notifications 'none';",
-		IsDevelopment:  os.Getenv("DEV") == "true",
+		// ReferrerPolicy: "same-origin",
+		FeaturePolicy: "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; microphone 'none'; notifications 'none';",
+		IsDevelopment: os.Getenv("DEV") == "true",
 	})
 
 	err := ioutil.WriteFile("pid", []byte(fmt.Sprintf("%d", os.Getpid())), 0644)
@@ -255,7 +255,7 @@ func main() {
 	if os.Getenv("DEV") != "true" {
 		m := autocert.Manager{
 			Prompt:     autocert.AcceptTOS,
-			HostPolicy: autocert.HostWhitelist("sandr0.tk", "www.sandr0.tk"),
+			HostPolicy: autocert.HostWhitelist("sandr0.xyz", "www.sandr0.xyz"),
 			Cache:      autocert.DirCache("certs"),
 		}
 		server := &http.Server{
@@ -264,7 +264,7 @@ func main() {
 				GetCertificate: m.GetCertificate,
 			},
 		}
-		log.Printf("Serving http/https on https://sandr0.tk")
+		log.Printf("Serving http/https on https://sandr0.xyz")
 		go func() {
 			// serve HTTP, which will redirect automatically to HTTPS
 			h := m.HTTPHandler(nil)
