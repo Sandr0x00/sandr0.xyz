@@ -232,7 +232,7 @@ func main() {
 			Cache:      autocert.DirCache("certs"),
 		}
 		server := &http.Server{
-			Addr: ":8443",
+			Addr: ":443",
 			TLSConfig: &tls.Config{
 				GetCertificate: m.GetCertificate,
 			},
@@ -241,7 +241,7 @@ func main() {
 		go func() {
 			// serve HTTP, which will redirect automatically to HTTPS
 			h := m.HTTPHandler(nil)
-			log.Fatal(http.ListenAndServe(":8080", h))
+			log.Fatal(http.ListenAndServe(":80", h))
 		}()
 
 		// serve HTTPS!
