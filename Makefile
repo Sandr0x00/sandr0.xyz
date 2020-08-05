@@ -9,6 +9,12 @@ nohup:
 	@cat pid
 	@printf "\n"
 
+install:
+	go get github.com/gorilla/mux
+	go get github.com/unrolled/secure
+	go get github.com/go-http-utils/logger
+	go get golang.org/x/crypto/acme/autocert
+
 build:
 	go build -o server -v server.go
 

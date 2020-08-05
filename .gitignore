@@ -2,3 +2,4 @@ server
 run.sh
 secured.json
 pid
+access.log

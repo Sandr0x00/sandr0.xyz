@@ -12,9 +12,8 @@ import (
 	"os"
 
 	"io/ioutil"
-	"sort"
-	"strings"
 
+	"github.com/go-http-utils/logger"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/secure"
 	"golang.org/x/crypto/acme/autocert"
@@ -30,40 +29,10 @@ type User struct {
 	Files    []string `json:"files"`
 }
 
-var lastHead = ""
-
-func logRequest(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		urlString := fmt.Sprintf("%s", r.URL)
-		if strings.HasPrefix(urlString, "/?") {
-			head := ""
-			for k, v := range r.Header {
-				head += fmt.Sprintf("\n    %s %s", k, strings.Join(v, ", "))
-			}
-			log.Printf("%s %s %s %s%s\n", r.RemoteAddr, r.Method, r.Proto, r.URL, head)
-		} else if !strings.HasSuffix(urlString, ".jpg") && !strings.HasSuffix(urlString, ".png") && !strings.HasSuffix(urlString, ".css") && !strings.HasSuffix(urlString, ".svg") && !strings.HasSuffix(urlString, ".ico") && !strings.HasSuffix(urlString, ".js") {
-			head := ""
-			var keys []string
-			for k := range r.Header {
-				if k == "If-None-Match" || k == "If-Modified-Since" || k == "Upgrade-Insecure-Requests" || k == "Accept" {
-					continue
-				}
-				keys = append(keys, k)
-			}
-			sort.Strings(keys)
-
-			for _, k := range keys {
-				head += fmt.Sprintf("\n    %s %s", k, strings.Join(r.Header[k], ", "))
-			}
-			if lastHead == head {
-				head = ""
-			} else {
-				lastHead = head
-			}
-			log.Printf("%s %s %s %s%s\n", r.RemoteAddr, r.Method, r.Proto, r.URL, head)
-		}
-		handler.ServeHTTP(w, r)
-	})
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Serve a reverse proxy for a given url
@@ -120,6 +89,7 @@ var phpProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	proxy.ServeHTTP(w, r)
 })
 
+// Redirect paths correctly
 func Redirect(target string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, target, http.StatusMovedPermanently)
@@ -228,14 +198,17 @@ func main() {
 		IsDevelopment: os.Getenv("DEV") == "true",
 	})
 
-	err := ioutil.WriteFile("pid", []byte(fmt.Sprintf("%d", os.Getpid())), 0644)
-	if err != nil {
-		panic(err)
-	}
+	var err error
+	accessLog, err := os.OpenFile("access.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	must(err)
+	defer accessLog.Close()
+
+	err = ioutil.WriteFile("pid", []byte(fmt.Sprintf("%d", os.Getpid())), 0644)
+	must(err)
 
 	r := mux.NewRouter()
 
-	r.Use(logRequest)
+	// r.Use(logRequest)
 
 	// no securemiddleware in shared
 	// r.HandlerFunc
@@ -250,7 +223,7 @@ func main() {
 	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", secureMiddleware.Handler(seriesProxy)))
 	r.Handle("/cal", calProxy)
 	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
-	http.Handle("/", r)
+	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))
 
 	if os.Getenv("DEV") != "true" {
 		m := autocert.Manager{
