@@ -10,6 +10,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"strings"
 
 	"io/ioutil"
 
@@ -149,8 +150,10 @@ func auth(handler http.Handler) http.Handler {
 				requestFile := html.EscapeString(r.URL.Path)
 				for _, curFile := range valid.Files {
 					if requestFile == curFile {
-						w.Header().Set("Content-Type", "application/octet-stream; charset=utf-8")
-						w.Header().Set("Content-Disposition", "attachment;")
+						if !strings.HasSuffix(requestFile, "html") {
+							w.Header().Set("Content-Type", "application/octet-stream; charset=utf-8")
+							w.Header().Set("Content-Disposition", "attachment;")
+						}
 						handler.ServeHTTP(w, r)
 					}
 				}
