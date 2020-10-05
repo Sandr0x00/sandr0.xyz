@@ -170,12 +170,23 @@ func auth(handler http.Handler) http.Handler {
 	})
 }
 
+func neuter(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/") {
+			http.NotFound(w, r)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	secureMiddleware := secure.New(secure.Options{
-		// AllowedHosts:         []string{"sandr0\\.xyz"},
-		AllowedHostsAreRegex: false,
+		AllowedHosts:         []string{"sandr0\\.xyz", ".*\\.sandr0\\.xyz"},
+		AllowedHostsAreRegex: true,
 		// HostsProxyHeaders:    []string{"X-Forwarded-Host"},
-		SSLRedirect: false,
+		SSLRedirect: true,
 		SSLHost:     "sandr0.xyz",
 		// SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
 		STSSeconds:           31536000,
@@ -211,21 +222,21 @@ func main() {
 
 	r := mux.NewRouter()
 
-	// r.Use(logRequest)
+	r.Use(secureMiddleware.Handler)
 
 	// no securemiddleware in shared
 	// r.HandlerFunc
 	r.Handle("/secured", Redirect("/secured/"))
-	r.PathPrefix("/secured/").Handler(http.StripPrefix("/secured/", secureMiddleware.Handler(auth(http.FileServer(http.Dir("secured"))))))
-	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", http.FileServer(http.Dir("shared"))))
+	r.PathPrefix("/secured/").Handler(http.StripPrefix("/secured/", auth(neuter(http.FileServer(http.Dir("secured"))))))
+	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", neuter(http.FileServer(http.Dir("shared")))))
 	r.Handle("/recipes", Redirect("/recipes/"))
-	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", secureMiddleware.Handler(recipeProxy)))
+	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", recipeProxy))
 	r.Handle("/php", Redirect("/php/"))
-	r.PathPrefix("/php/").Handler(http.StripPrefix("/php/", secureMiddleware.Handler(phpProxy)))
+	r.PathPrefix("/php/").Handler(http.StripPrefix("/php/", phpProxy))
 	r.Handle("/series", Redirect("/series/"))
-	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", secureMiddleware.Handler(seriesProxy)))
+	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", seriesProxy))
 	r.Handle("/cal", calProxy)
-	r.PathPrefix("/").Handler(secureMiddleware.Handler(http.FileServer(http.Dir("static"))))
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
 	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))
 
 	if os.Getenv("DEV") != "true" {

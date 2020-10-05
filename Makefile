@@ -21,7 +21,7 @@ build:
 rebuild: build run
 
 report:
-	nohup goaccess access.log -a -o secured/report.html --real-time-html &
+	goaccess access.log -a -o secured/report.html
 
 run:
 	./run.sh
