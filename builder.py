@@ -14,7 +14,7 @@ class Part():
 
 parts = []
 
-parts.append(Part("about", "About", "Hi, I'm Sandro. I like to code, cook and learn new stuff."))
+parts.append(Part("about", "About", "Hi, I'm Sandro. I like coding, cooking, and learning new stuff."))
 
 parts.append(Part("projects", "Personal Projects", """
 <a href="/recipes" title="My personal recipe collection"><img class="client-work" src="recipes.jpg" alt="recipes"></a>
@@ -73,7 +73,7 @@ page = f"""
     <link rel="icon" href="favicon-228.png" sizes="228x228">
 
     <!-- Android -->
-    <link rel="shortcut icon" sizes="196x196" href=“favicon-196.png">
+    <link rel="shortcut icon" sizes="196x196" href="favicon-196.png">
 
     <!-- iOS -->
     <link rel="apple-touch-icon" href="favicon-120.png" sizes="120x120">
