@@ -14,7 +14,7 @@ class Part():
 
 parts = []
 
-parts.append(Part("about", "About", "Hi, I'm Sandro. I like coding, cooking, and learning new stuff."))
+parts.append(Part("about", "About", "Hi, I'm Sandro. I like to cook and code."))
 
 parts.append(Part("projects", "Personal Projects", """
 <a href="/recipes" title="My personal recipe collection"><img class="client-work" src="recipes.jpg" alt="recipes"></a>
@@ -31,13 +31,25 @@ parts.append(Part("web", "Web Development", """
 # <a href="https://schreiner-suess.de" title="Website for Schreinerei Andreas Süß Fuchsberg"><img class="client-work" src="schreiner-suess.png" alt="schreiner-suess"></a>
 
 parts.append(Part("fun", "Fun", """
+<p>Don't like the style of my website? Redesign it yourself!</p>
+<style style="display:block; background-color: #444; padding:.5em; font-family: monospace;" contenteditable="">
+body{
+  color:#dddddd;
+  background-color:#00060e;
+}
+.highlight {
+    fill: #1a84ff
+}
+</style><br>
 <a href="#" onclick="function f(){}var a=f;for(var b=0;b<100000;++b){a=a.bind();Object.defineProperty(a,Symbol.hasInstance,{})}({})instanceof a;">This link may segfault your Chrome Tab</a> (Ref: <a href="https://twitter.com/GuidoVranken/status/1271059248861138944">@GuidoVranken</a>)
 """))
 
 parts.append(Part("ctf", "CTF Writeups", """
+<p>
 0CTF 2020 Qual - <a href="https://hxp.io/blog/74/0CTF%202020%20writeups/#cloud-computing">Cloud Computing</a><br>
 Plaid CTF 2020 - <a href="https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme/">Bonzi Scheme</a><br>
 Teaser Dragon CTF 2019 - <a href="https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup/">PlayCAP</a>
+</p>
 """))
 
 def svg(file_name):
@@ -45,6 +57,7 @@ def svg(file_name):
         img = f.read()
     # print(img)
     img = re.sub(r'<\?xml version="1.0" encoding="UTF-8" standalone="no"\?>', "", img)
+    img = re.sub(r'(style=".*)fill:#010101;', r'class="highlight" \g<1>', img)
     img = re.sub(r"fill:#010101;",f"fill:#1a84ff;",img)
     img = re.sub(r"fill:#020202;",f"fill:#bbbbbb;",img)
     img = re.sub(r"fill:#030303;",f"fill:#ffffff;",img)
@@ -86,7 +99,7 @@ page = f"""
 
     <!— Windows 8.1 + IE11 and above —>
     <meta name="msapplication-config" content="browserconfig.xml" />
-  <title>Sandr0</title>
+  <title>Sandr0.xyz</title>
 </head>
 <body>
     <main>
@@ -134,14 +147,8 @@ comment = """
     </div>
     <div class="row">
       <div id="fun" class="col-sm-12">
-        <b>Don't like the style of my website? Just redesign it yourself!</b>
+        <b></b>
         <br>
-        <style style="display:block; background-color: #444; padding:.5em; font-family: monospace;" contenteditable="">
-body{ color:#dddddd; background-color:#222; }
-.row{ margin-top:.4em; }
-h4{ padding-top:.2em; padding-bottom:1em; }
-a,a:hover{ color:#cf4e4e; text-decoration:none; }
-        </style>
         <br>
         <h4>Fun</h4>
       </div>

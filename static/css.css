@@ -5,12 +5,10 @@ body{
 }
 
 a:visited,a {
-    color: #dddddd;
+    color: inherit;
 }
 
 body {
-    color:#dddddd;
-    background-color:#00060e;
     display: grid;
     grid-template-columns: minmax(0,1fr) 50px;
     padding: 10px;
@@ -46,9 +44,6 @@ nav {
     height: auto;
 }
 
-.highlight {
-    fill: #1a84ff
-}
 .logo {
     width: 100%;
     height: 100%;
