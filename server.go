@@ -11,6 +11,8 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
+	"github.com/NYTimes/gziphandler"
 
 	"io/ioutil"
 
@@ -170,15 +172,20 @@ func auth(handler http.Handler) http.Handler {
 	})
 }
 
-func neuter(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasSuffix(r.URL.Path, "/") {
-			http.NotFound(w, r)
-			return
-		}
 
+
+var (
+	cacheSince = time.Now().Format(http.TimeFormat)
+	cacheUntil = time.Now().AddDate(30, 0, 0).Format(http.TimeFormat)
+)
+
+func cacheZipMiddleware(next http.Handler) http.Handler {
+	return gziphandler.GzipHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "max-age:2592000")
+		w.Header().Set("Last-Modified", cacheSince)
+		w.Header().Set("Expires", cacheUntil)
 		next.ServeHTTP(w, r)
-	})
+	}))
 }
 
 func main() {
@@ -197,10 +204,10 @@ func main() {
 		ContentTypeNosniff:   true,
 		BrowserXssFilter:     true,
 		ContentSecurityPolicy: `
-			default-src 'self' use.fontawesome.com;
-			font-src 'self' use.fontawesome.com;
+			default-src 'self';
+			font-src 'self';
 			img-src 'self';
-			style-src 'self' 'unsafe-inline' use.fontawesome.com;
+			style-src 'self' 'unsafe-inline';
 			script-src 'self' 'unsafe-inline';
 			base-uri 'none';
 			form-action 'self';
@@ -227,8 +234,8 @@ func main() {
 	// no securemiddleware in shared
 	// r.HandlerFunc
 	r.Handle("/secured", Redirect("/secured/"))
-	r.PathPrefix("/secured/").Handler(http.StripPrefix("/secured/", auth(neuter(http.FileServer(http.Dir("secured"))))))
-	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", neuter(http.FileServer(http.Dir("shared")))))
+	r.PathPrefix("/secured/").Handler(http.StripPrefix("/secured/", auth(cacheZipMiddleware(http.FileServer(http.Dir("secured"))))))
+	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", cacheZipMiddleware(http.FileServer(http.Dir("shared")))))
 	r.Handle("/recipes", Redirect("/recipes/"))
 	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", recipeProxy))
 	r.Handle("/php", Redirect("/php/"))
@@ -236,7 +243,7 @@ func main() {
 	r.Handle("/series", Redirect("/series/"))
 	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", seriesProxy))
 	r.Handle("/cal", calProxy)
-	r.PathPrefix("/").Handler(http.FileServer(http.Dir("static")))
+	r.PathPrefix("/").Handler(cacheZipMiddleware(http.FileServer(http.Dir("static"))))
 	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))
 
 	if os.Getenv("DEV") != "true" {

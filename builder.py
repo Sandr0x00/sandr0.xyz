@@ -23,7 +23,6 @@ def resize(file_name):
   if (m := re.search(r"^(?P<name>.*)\.(?P<ext>...)$", file_name)):
     file_name = m.group("name")
     ext = m.group("ext")
-    print(ext)
   else:
     ext = "jpg"
   im = Image.open(f"resources/{file_name}.{ext}")
