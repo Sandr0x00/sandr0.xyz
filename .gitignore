@@ -3,3 +3,4 @@ run.sh
 secured.json
 pid
 access.log
+static/img

@@ -1,6 +1,8 @@
 
 import re
 import os
+from PIL import Image
+import glob
 
 class Part():
     id = None
@@ -12,22 +14,70 @@ class Part():
         self.title = title
         self.content = content
 
+def resize(file_name):
+
+  try:
+      if not os.path.exists("static/img"):
+        os.mkdir("static/img")
+  except OSError:
+      print ("Creation of the directory %s failed" % path)
+  sizes = []
+  if (m := re.search(r"^(?P<name>.*)\.(?P<ext>...)$", file_name)):
+    file_name = m.group("name")
+    ext = m.group("ext")
+    print(ext)
+  else:
+    ext = "jpg"
+  im = Image.open(f"resources/{file_name}.{ext}")
+  for s in [im.width, 1400, 1000, 800, 400]:
+    sizes.append(f"img/{file_name}-{s}.{ext} {s}w")
+    if os.path.exists(f"static/img/{file_name}-{s}.{ext}"):
+      continue
+    im.thumbnail((s, s))
+    im.save(f"static/img/{file_name}-{s}.{ext}")
+  return ', '.join(sizes)
+
 parts = []
 
 parts.append(Part("about", "About", "Hi, I'm Sandro. I like to cook and code."))
 
-parts.append(Part("projects", "Personal Projects", """
-<a href="/recipes" title="My personal recipe collection"><img class="client-work" src="recipes.jpg" alt="recipes"></a>
-<a href="/series" title="The status of my series"><img class="client-work" src="series.jpg" alt="series"></a>
-<a href="https://github.com/Sandr0x00/find-the-chicken" title="My CTF gameboy challenge"><img class="client-work" src="find-the-chicken.png" alt="find-the-chicken"></a>
-"""))
+web_data = [
+  # website, description, file
+  ["/recipes", "My personal recipe collection", "recipes.jpg"],
+  ["/series", "The status of my series", "series.jpg"],
+  ["https://github.com/Sandr0x00/find-the-chicken", "My CTF gameboy challenge", "find-the-chicken.png"],
+]
 
-parts.append(Part("web", "Web Development", """
-<a href="https://www.michael-konstantin.de/" title="Website for Michael Konstantin"><img class="client-work" src="michael-konstantin.jpg" alt="michael-konstantin"></a>
-<a href="https://almenrausch-pirkhof.de" title="Website for Almenrausch Pirkhof Schützenverein Pirkhof"><img class="client-work" src="almenrausch-pirkhof.jpg" alt="almenrausch-pirkhof"></a>
-<a href="http://juliagruber.de" title="Website for Julia Gruber"><img class="client-work" src="juliagruber.jpg" alt="juliagruber"></a>
-<a href="https://doktor-eisenbarth.de" title="Website for Doktor Eisenbarth Festspielverein Oberviechtach"><img class="client-work" src="doktor-eisenbarth.jpg" alt="doktor-eisenbarth"></a>
-"""))
+content = ""
+for i in web_data:
+  domain, description, file_name = i
+  sizes = resize(file_name)
+  content += f"""<a href="{domain}" title="{description}">
+<img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" class="client-work" src="img/{file_name}-400.jpg" alt="{file_name}" srcset="{sizes}">
+</a>"""
+
+parts.append(Part("projects", "Personal Projects", content))
+
+
+
+web_data = [
+  # website, description, file
+  ["https://www.michael-konstantin.de", "Michael Konstantin", "michael-konstantin"],
+  ["https://almenrausch-pirkhof.de", "Almenrausch Pirkhof Schützenverein Pirkhof", "almenrausch-pirkhof"],
+  ["http://juliagruber.de", "Julia Gruber", "juliagruber"],
+  ["https://doktor-eisenbarth.de", "Doktor Eisenbarth Festspielverein Oberviechtach", "doktor-eisenbarth"],
+]
+
+
+content = ""
+for i in web_data:
+  domain, description, file_name = i
+  sizes = resize(file_name)
+  content += f"""<a href="{domain}" title="Website for {description}">
+<img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" class="client-work" src="img/{file_name}-400.jpg" alt="{file_name}" srcset="{sizes}">
+</a>"""
+
+parts.append(Part("web", "Web Development", content))
 # <a href="https://schreiner-suess.de" title="Website for Schreinerei Andreas Süß Fuchsberg"><img class="client-work" src="schreiner-suess.png" alt="schreiner-suess"></a>
 
 parts.append(Part("fun", "Fun", """
