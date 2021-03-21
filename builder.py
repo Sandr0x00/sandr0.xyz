@@ -205,6 +205,7 @@ comment = """
   </div>
 """
 page += """
+  <link rel="preload" href="/fontawesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/fontawesome/css/all.min.css">
 </body>
 </html>
