@@ -145,8 +145,10 @@ page = f"""
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="msapplication-TileImage" content="favicon-144.png">
 
-    <!— Windows 8.1 + IE11 and above —>
+    <!-- Windows 8.1 + IE11 and above -->
     <meta name="msapplication-config" content="browserconfig.xml" />
+
+    <link rel="stylesheet" href="/fontawesome/css/all.min.css">
   <title>Sandr0.xyz</title>
 </head>
 <body>
@@ -204,7 +206,7 @@ comment = """
     </div>
   </div>
 """
-page += """<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.9.0/css/all.css" integrity="sha384-i1LQnF23gykqWXg6jxC2ZbCbUMxyw5gLZY6UiUS98LYV5unm8GWmfkIS6jqJfb4E" crossorigin="anonymous">
+page += """
 </body>
 </html>
 <!--
