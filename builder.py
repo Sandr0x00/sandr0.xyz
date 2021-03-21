@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 import re
 import os
@@ -147,8 +148,6 @@ page = f"""
 
     <!-- Windows 8.1 + IE11 and above -->
     <meta name="msapplication-config" content="browserconfig.xml" />
-
-    <link rel="stylesheet" href="/fontawesome/css/all.min.css">
   <title>Sandr0.xyz</title>
 </head>
 <body>
@@ -207,6 +206,7 @@ comment = """
   </div>
 """
 page += """
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css">
 </body>
 </html>
 <!--
