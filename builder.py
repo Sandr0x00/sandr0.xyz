@@ -16,11 +16,8 @@ class Part():
 
 def resize(file_name):
 
-  try:
-      if not os.path.exists("static/img"):
-        os.mkdir("static/img")
-  except OSError:
-      print ("Creation of the directory %s failed" % path)
+  if not os.path.exists("static/img"):
+    os.mkdir("static/img")
   sizes = []
   if (m := re.search(r"^(?P<name>.*)\.(?P<ext>...)$", file_name)):
     file_name = m.group("name")
@@ -29,13 +26,14 @@ def resize(file_name):
   else:
     ext = "jpg"
   im = Image.open(f"resources/{file_name}.{ext}")
+  im.save(f"static/img/{file_name}.{ext}")
   for s in [im.width, 1400, 1000, 800, 400]:
-    sizes.append(f"img/{file_name}-{s}.{ext} {s}w")
-    if os.path.exists(f"static/img/{file_name}-{s}.{ext}"):
+    sizes.append(f"img/{file_name}-{s}.webp {s}w")
+    if os.path.exists(f"static/img/{file_name}-{s}.webp"):
       continue
     im.thumbnail((s, s))
-    im.save(f"static/img/{file_name}-{s}.{ext}")
-  return ', '.join(sizes)
+    im.save(f"static/img/{file_name}-{s}.webp", "webp")
+  return (f"img/{file_name}.{ext}", ', '.join(sizes))
 
 parts = []
 
@@ -51,9 +49,9 @@ web_data = [
 content = ""
 for i in web_data:
   domain, description, file_name = i
-  sizes = resize(file_name)
-  content += f"""<a href="{domain}" title="{description}">
-<img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" class="client-work" src="img/{file_name}-400.jpg" alt="{file_name}" srcset="{sizes}">
+  fallback, sizes = resize(file_name)
+  content += f"""<a class="client-work" href="{domain}" title="{description}">
+<img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" src="{fallback}" class="client-work" alt="{file_name}" srcset="{sizes}">
 </a>"""
 
 parts.append(Part("projects", "Personal Projects", content))
@@ -72,9 +70,9 @@ web_data = [
 content = ""
 for i in web_data:
   domain, description, file_name = i
-  sizes = resize(file_name)
-  content += f"""<a href="{domain}" title="Website for {description}">
-<img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" class="client-work" src="img/{file_name}-400.jpg" alt="{file_name}" srcset="{sizes}">
+  fallback, sizes = resize(file_name)
+  content += f"""<a class="client-work" href="{domain}" title="Website for {description}">
+<img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" class="client-work" src="{fallback}" alt="{file_name}" srcset="{sizes}">
 </a>"""
 
 parts.append(Part("web", "Web Development", content))
