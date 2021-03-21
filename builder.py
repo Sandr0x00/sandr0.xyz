@@ -27,7 +27,7 @@ def resize(file_name):
     ext = "jpg"
   im = Image.open(f"resources/{file_name}.{ext}")
   im.save(f"static/img/{file_name}.{ext}")
-  for s in [im.width, 1400, 1000, 800, 400]:
+  for s in [im.width, 1400, 1000, 800, 600, 400]:
     sizes.append(f"img/{file_name}-{s}.webp {s}w")
     if os.path.exists(f"static/img/{file_name}-{s}.webp"):
       continue
