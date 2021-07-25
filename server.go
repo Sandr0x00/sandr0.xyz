@@ -12,8 +12,9 @@ import (
 	"os"
 	"strings"
 	"time"
+	"regexp"
 	"github.com/NYTimes/gziphandler"
-
+	"path/filepath"
 	"io/ioutil"
 
 	"github.com/go-http-utils/logger"
@@ -120,6 +121,19 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	}
 })
 
+func filteredSearchOfDirectoryTree(re *regexp.Regexp, dir string, w http.ResponseWriter) error {
+	walk := func(fn string, fi os.FileInfo, err error) error {
+		if !re.MatchString(fn) {
+			return nil
+		}
+
+		fmt.Fprintf(w, `<a href="/%v">%v</a><br>`, fn, fn)
+		return nil
+	}
+	filepath.Walk(dir, walk)
+	return nil
+}
+
 func auth(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -128,6 +142,7 @@ func auth(handler http.Handler) http.Handler {
 		// if we os.Open returns an error then handle it
 		if err != nil {
 			fmt.Println(err)
+			return
 		}
 		// defer the closing of our jsonFile so that we can parse it later on
 		defer jsonFile.Close()
@@ -144,31 +159,36 @@ func auth(handler http.Handler) http.Handler {
 
 		user, pass, _ := r.BasicAuth()
 
-		// we iterate through every user within our users array and
-		// print out the user Type, their name, and their facebook url
-		// as just an example
 		for _, valid := range users.Users {
-			if valid.Name == user && valid.Password == pass {
-				requestFile := html.EscapeString(r.URL.Path)
+			if valid.Name != user || valid.Password != pass {
+				// something is not correct
+				w.Header().Set("WWW-Authenticate", `Basic`)
+				http.Error(w, "Unauthorized.", 401)
+				return
+			}
+
+			requestFile := html.EscapeString(r.URL.Path)
+			if requestFile != "" {
 				for _, curFile := range valid.Files {
-					if requestFile == curFile {
+					re := regexp.MustCompile(curFile)
+					fmt.Println("%v", re)
+					if re.MatchString(requestFile) {
+						fmt.Printf("matched: %v", requestFile)
 						if !strings.HasSuffix(requestFile, "html") {
 							w.Header().Set("Content-Type", "application/octet-stream; charset=utf-8")
 							w.Header().Set("Content-Disposition", "attachment;")
 						}
 						handler.ServeHTTP(w, r)
+						return
 					}
 				}
-				for _, curFile := range valid.Files {
-					fmt.Fprintf(w, `<a href="%v">%v</a><br>`, curFile, curFile)
-				}
-				return
 			}
+			for _, curFile := range valid.Files {
+				filteredSearchOfDirectoryTree(regexp.MustCompile(curFile), "secured", w)
+			}
+			return
 		}
 
-		w.Header().Set("WWW-Authenticate", `Basic`)
-		http.Error(w, "Unauthorized.", 401)
-		return
 	})
 }
 
