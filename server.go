@@ -121,6 +121,24 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	}
 })
 
+var localProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	local, ok := r.URL.Query()["local"]
+	if !ok {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if os.Getenv("LOCAL_UUID") == local[0] {
+		localIp := strings.Split(r.RemoteAddr, ":")[0]
+		err := ioutil.WriteFile("shared/local.js", []byte(fmt.Sprintf("const IP = '%s';", localIp)), 0644)
+		must(err)
+		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
+		w.Header().Add("Connection", "close")
+		fmt.Fprint(w, localIp)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+})
+
 func filteredSearchOfDirectoryTree(re *regexp.Regexp, dir string, w http.ResponseWriter) error {
 	walk := func(fn string, fi os.FileInfo, err error) error {
 		if !re.MatchString(fn) {
@@ -139,7 +157,7 @@ func auth(handler http.Handler) http.Handler {
 
 		// Authenticated users
 		jsonFile, err := os.Open("secured.json")
-		// if we os.Open returns an error then handle it
+		// handle errors
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -150,11 +168,8 @@ func auth(handler http.Handler) http.Handler {
 		// read our opened jsonFile as a byte array.
 		byteValue, _ := ioutil.ReadAll(jsonFile)
 
-		// we initialize our Users array
+		// unmarshal array into 'users'
 		var users Users
-
-		// we unmarshal our byteArray which contains our
-		// jsonFile's content into 'users' which we defined above
 		json.Unmarshal(byteValue, &users)
 
 		user, pass, _ := r.BasicAuth()
@@ -263,6 +278,7 @@ func main() {
 	r.Handle("/series", Redirect("/series/"))
 	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", seriesProxy))
 	r.Handle("/cal", calProxy)
+	r.Handle("/local", localProxy)
 	r.PathPrefix("/").Handler(cacheZipMiddleware(http.FileServer(http.Dir("static"))))
 	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))
 
@@ -285,7 +301,7 @@ func main() {
 			log.Fatal(http.ListenAndServe(":80", h))
 		}()
 
-		// serve HTTPS!
+		// serve HTTPS
 		log.Fatal(server.ListenAndServeTLS("", ""))
 	}
 
