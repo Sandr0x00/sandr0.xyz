@@ -121,22 +121,16 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	}
 })
 
-var localProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	local, ok := r.URL.Query()["local"]
-	if !ok {
-		w.WriteHeader(http.StatusBadRequest)
-		return
+var mijiaProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	res, err := http.Get(os.Getenv("MIJIA"))
+	if err != nil {
+		log.Fatal(err)
 	}
-	if os.Getenv("LOCAL_UUID") == local[0] {
-		localIp := strings.Split(r.RemoteAddr, ":")[0]
-		err := ioutil.WriteFile("shared/local.js", []byte(fmt.Sprintf("const IP = '%s';", localIp)), 0644)
-		must(err)
-		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
-		w.Header().Add("Connection", "close")
-		fmt.Fprint(w, localIp)
-	} else {
-		w.WriteHeader(http.StatusBadRequest)
-	}
+	body, err := ioutil.ReadAll(res.Body)
+	res.Body.Close()
+	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Add("Connection", "close")
+	fmt.Fprint(w, fmt.Sprintf("%s", body))
 })
 
 func filteredSearchOfDirectoryTree(re *regexp.Regexp, dir string, w http.ResponseWriter) error {
@@ -278,7 +272,7 @@ func main() {
 	r.Handle("/series", Redirect("/series/"))
 	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", seriesProxy))
 	r.Handle("/cal", calProxy)
-	r.Handle("/local", localProxy)
+	r.Handle("/mijia", mijiaProxy)
 	r.PathPrefix("/").Handler(cacheZipMiddleware(http.FileServer(http.Dir("static"))))
 	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))
 
