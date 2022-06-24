@@ -109,7 +109,9 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	if os.Getenv("CAL_UUID") == cal[0] {
 		res, err := http.Get(fmt.Sprintf("https://%s:%s@cal.hxp.io/", os.Getenv("CAL_USER"), os.Getenv("CAL_PW")))
 		if err != nil {
-			log.Fatal(err)
+			fmt.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
 		body, err := ioutil.ReadAll(res.Body)
 		res.Body.Close()
@@ -124,7 +126,9 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 var mijiaProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	res, err := http.Get(os.Getenv("MIJIA"))
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		w.WriteHeader(http.StatusInternalServerError)
+		return
 	}
 	body, err := ioutil.ReadAll(res.Body)
 	res.Body.Close()
