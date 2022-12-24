@@ -133,8 +133,6 @@ page = f"""
     <link rel="icon" href="favicon-192.png" sizes="192x192">
     <link rel="icon" href="favicon-228.png" sizes="228x228">
 
-    <a rel="me" href="https://infosec.exchange/@sandr0">Mastodon</a>
-
     <!-- Android -->
     <link rel="shortcut icon" sizes="196x196" href="favicon-196.png">
 
@@ -184,6 +182,7 @@ page += """</div></nav>
 <div>
 <a href="https://twitter.com/Sandr0x00"><i class="fab fa-twitter fa-2x"></i></a>
 <a href="https://github.com/Sandr0x00"><i class="fab fa-github fa-2x"></i></a>
+<a rel="me" href="https://infosec.exchange/@sandr0"><i class="fab fa-mastodon fa-2x"></i></a>
 </div>
 </div>
 """
