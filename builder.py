@@ -133,6 +133,8 @@ page = f"""
     <link rel="icon" href="favicon-192.png" sizes="192x192">
     <link rel="icon" href="favicon-228.png" sizes="228x228">
 
+    <a rel="me" href="https://infosec.exchange/@sandr0">Mastodon</a>
+
     <!-- Android -->
     <link rel="shortcut icon" sizes="196x196" href="favicon-196.png">
 
