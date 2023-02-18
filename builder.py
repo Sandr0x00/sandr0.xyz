@@ -37,13 +37,22 @@ def resize(file_name):
 
 parts = []
 
-parts.append(Part("about", "About", "Hi, I'm Sandro. I like to cook and code."))
+#===========================================================
+# about
+#===========================================================
+
+parts.append(Part("about", "About", "Hi, I'm Sandro. I like to cook and code and hack."))
+
+#===========================================================
+# projects
+#===========================================================
 
 web_data = [
   # website, description, file
   ["/recipes", "My personal recipe collection", "recipes.jpg"],
   ["/series", "The status of my series", "series.jpg"],
-  ["https://github.com/Sandr0x00/find-the-chicken", "My CTF gameboy challenge", "find-the-chicken.png"],
+  ["https://github.com/Sandr0x00/find-the-chicken", "Gameboy CTF challenge for hxp CTF 2020", "find-the-chicken.png"],
+  ["https://github.com/Sandr0x00/gameboy-is-you", "Gameboy CTF challenge for hxp CTF 2021", "gameboy-is-you.png"],
 ]
 
 content = ""
@@ -56,7 +65,9 @@ for i in web_data:
 
 parts.append(Part("projects", "Personal Projects", content))
 
-
+#===========================================================
+# web dev
+#===========================================================
 
 web_data = [
   # website, description, file
@@ -66,7 +77,6 @@ web_data = [
   ["https://doktor-eisenbarth.de", "Doktor Eisenbarth Festspielverein Oberviechtach", "doktor-eisenbarth"],
 ]
 
-
 content = ""
 for i in web_data:
   domain, description, file_name = i
@@ -75,8 +85,40 @@ for i in web_data:
 <img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" class="client-work" src="{fallback}" alt="{file_name}" srcset="{sizes}">
 </a>"""
 
-parts.append(Part("web", "Web Development", content))
+parts.append(Part("web", "Freelance Work / Web Development", content))
 # <a href="https://schreiner-suess.de" title="Website for Schreinerei Andreas Süß Fuchsberg"><img class="client-work" src="schreiner-suess.png" alt="schreiner-suess"></a>
+
+#===========================================================
+# CTF
+#===========================================================
+
+ctf = {
+  "Insomni'hack 2022": [("PDF-Xfiltration", "https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration")],
+  "hxp CTF 2021": [("gameboy is you", "https://github.com/Sandr0x00/gameboy-is-you/blob/main/writeup/readme.md")],
+  "0CTF 2021 Quals": [("pypypypy", "https://hxp.io/blog/85/0CTFTCTF-2021-Quals-selected-writeups#pypypypy")],
+  "hxp CTF 2020": [("find the chicken", "https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken")],
+  "0CTF 2020 Quals": [("Cloud Computing", "https://hxp.io/blog/74/0CTF%202020%20writeups#cloud-computing")],
+  "Plaid CTF 2020": [("Bonzi Scheme", "https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme")],
+  "Teaser Dragon CTF 2019": [("PlayCAP", "https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup")],
+}
+
+content = ""
+for i,j in ctf.items():
+  assert '"' not in i
+  for k,l in j:
+    assert '"' not in k
+    assert '"' not in l
+    content += f"""{i} - <a href="{l}">{k}</a><br>\n"""
+
+parts.append(Part("ctf", "CTF Writeups", f"""
+<p>
+{content}
+</p>
+"""))
+
+#===========================================================
+# fun
+#===========================================================
 
 parts.append(Part("fun", "Fun", """
 <p>Don't like the style of my website? Redesign it yourself!</p>
@@ -92,13 +134,6 @@ body{
 <a href="#" onclick="function f(){}var a=f;for(var b=0;b<100000;++b){a=a.bind();Object.defineProperty(a,Symbol.hasInstance,{})}({})instanceof a;">This link may segfault your Chrome Tab</a> (Ref: <a href="https://twitter.com/GuidoVranken/status/1271059248861138944">@GuidoVranken</a>)
 """))
 
-parts.append(Part("ctf", "CTF Writeups", """
-<p>
-0CTF 2020 Qual - <a href="https://hxp.io/blog/74/0CTF%202020%20writeups/#cloud-computing">Cloud Computing</a><br>
-Plaid CTF 2020 - <a href="https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme/">Bonzi Scheme</a><br>
-Teaser Dragon CTF 2019 - <a href="https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup/">PlayCAP</a>
-</p>
-"""))
 
 def svg(file_name):
     with open(file_name, "r") as f:
