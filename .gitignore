@@ -6,3 +6,4 @@ access.log
 static/img
 static/index.html
 static/fontawesome
+env/

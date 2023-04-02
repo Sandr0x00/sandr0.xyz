@@ -16,7 +16,6 @@ class Part():
         self.content = content
 
 def resize(file_name):
-
   if not os.path.exists("static/img"):
     os.mkdir("static/img")
   sizes = []
@@ -35,13 +34,37 @@ def resize(file_name):
     im.save(f"static/img/{file_name}-{s}.webp", "webp")
   return (f"img/{file_name}.{ext}", ', '.join(sizes))
 
+def svg(file_name):
+    with open(file_name, "r") as f:
+        img = f.read()
+    # print(img)
+    img = re.sub(r'<\?xml version="1.0" encoding="UTF-8" standalone="no"\?>', "", img)
+    img = re.sub(r'(style=".*)fill:#010101;', r'class="highlight" \g<1>', img)
+    img = re.sub(r"fill:#010101;",f"fill:#1a84ff;",img)
+    img = re.sub(r"fill:#020202;",f"fill:#bbbbbb;",img)
+    img = re.sub(r"fill:#030303;",f"fill:#ffffff;",img)
+    return img
+
 parts = []
 
 #===========================================================
 # about
 #===========================================================
 
-parts.append(Part("about", "About", "Hi, I'm Sandro. I like to cook and code and hack."))
+img = svg("resources/sandr0.svg")
+img = re.sub(r"<svg",f'<svg class="sandr0"',img)
+
+about_data = [
+  f'I am {img}',
+  '<span class="hidden">I am</span> a <a href="https://hxp.io">CTF player</a>',
+  '<span class="hidden">I am</span> a <a class="kompilers" href="https://kompilers.com/">kompiler</a>',
+  '<span class="hidden">I am</span> a <a href="mailto:job@sandr0.xyz">freelancer</a>',
+  '<span class="hidden">I am</span> a <a href="https://www.cve.org/CVERecord?id=CVE-2023-28158">hacker</a>',
+  '<span class="hidden">I am</span> a <a href="https://github.com/Sandr0x00">developer</a>',
+  '<span class="hidden">I am</span> a <a href="/recipes">cook</a>',
+]
+
+parts.append(Part("about", "About", '<br/>'.join(about_data)))
 
 #===========================================================
 # projects
@@ -85,7 +108,7 @@ for i in web_data:
 <img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" class="client-work" src="{fallback}" alt="{file_name}" srcset="{sizes}">
 </a>"""
 
-parts.append(Part("web", "Freelance Work / Web Development", content))
+parts.append(Part("web", "Freelance Work (Non NDA) / Web Development", content))
 # <a href="https://schreiner-suess.de" title="Website for Schreinerei Andreas Süß Fuchsberg"><img class="client-work" src="schreiner-suess.png" alt="schreiner-suess"></a>
 
 #===========================================================
@@ -93,13 +116,33 @@ parts.append(Part("web", "Freelance Work / Web Development", content))
 #===========================================================
 
 ctf = {
-  "Insomni'hack 2022": [("PDF-Xfiltration", "https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration")],
-  "hxp CTF 2021": [("gameboy is you", "https://github.com/Sandr0x00/gameboy-is-you/blob/main/writeup/readme.md")],
-  "0CTF 2021 Quals": [("pypypypy", "https://hxp.io/blog/85/0CTFTCTF-2021-Quals-selected-writeups#pypypypy")],
-  "hxp CTF 2020": [("find the chicken", "https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken")],
-  "0CTF 2020 Quals": [("Cloud Computing", "https://hxp.io/blog/74/0CTF%202020%20writeups#cloud-computing")],
-  "Plaid CTF 2020": [("Bonzi Scheme", "https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme")],
-  "Teaser Dragon CTF 2019": [("PlayCAP", "https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup")],
+  "hxp CTF 2022": [
+    ("archived", "https://hxp.io/blog/100/hxp-CTF-2022-archived/"),
+    ("required", "https://hxp.io/blog/103/hxp-CTF-2022-required/"),
+    ("sqlite_web", "https://hxp.io/blog/102/hxp-CTF-2022-sqlite_web/"),
+    ("valentine", "https://hxp.io/blog/101/hxp-CTF-2022-valentine/"),
+  ],
+  "Insomni'hack 2022": [
+    ("PDF-Xfiltration", "https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration")
+  ],
+  "hxp CTF 2021": [
+    ("gameboy is you", "https://github.com/Sandr0x00/gameboy-is-you/blob/main/writeup/readme.md")
+  ],
+  "0CTF 2021 Quals": [
+    ("pypypypy", "https://hxp.io/blog/85/0CTFTCTF-2021-Quals-selected-writeups#pypypypy")
+  ],
+  "hxp CTF 2020": [
+    ("find the chicken", "https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken")
+  ],
+  "0CTF 2020 Quals": [
+    ("Cloud Computing", "https://hxp.io/blog/74/0CTF%202020%20writeups#cloud-computing")
+  ],
+  "Plaid CTF 2020": [
+    ("Bonzi Scheme", "https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme")
+  ],
+  "Teaser Dragon CTF 2019": [
+    ("PlayCAP", "https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup")
+  ],
 }
 
 content = ""
@@ -125,28 +168,21 @@ parts.append(Part("fun", "Fun", """
 <style style="display:block; background-color: #444; padding:.5em; font-family: monospace;" contenteditable="">
 body{
   color:#dddddd;
-  background-color:#00060e;
+  background-color:#00060e
 }
 .highlight {
-    fill: #1a84ff
+  fill: #1a84ff
+}
+a:visited,a {
+  color: #1a84ff
 }
 </style><br>
 <a href="#" onclick="function f(){}var a=f;for(var b=0;b<100000;++b){a=a.bind();Object.defineProperty(a,Symbol.hasInstance,{})}({})instanceof a;">This link may segfault your Chrome Tab</a> (Ref: <a href="https://twitter.com/GuidoVranken/status/1271059248861138944">@GuidoVranken</a>)
 """))
 
 
-def svg(file_name):
-    with open(file_name, "r") as f:
-        img = f.read()
-    # print(img)
-    img = re.sub(r'<\?xml version="1.0" encoding="UTF-8" standalone="no"\?>', "", img)
-    img = re.sub(r'(style=".*)fill:#010101;', r'class="highlight" \g<1>', img)
-    img = re.sub(r"fill:#010101;",f"fill:#1a84ff;",img)
-    img = re.sub(r"fill:#020202;",f"fill:#bbbbbb;",img)
-    img = re.sub(r"fill:#030303;",f"fill:#ffffff;",img)
-    return img
 
-img = svg("resources/sandr0.svg")
+img = svg("resources/sandr0.xyz.svg")
 
 # print(img)
 img = re.sub(r"<svg",f'<svg class="logo"',img)

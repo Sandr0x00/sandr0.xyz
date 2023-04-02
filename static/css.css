@@ -5,7 +5,7 @@ body{
 }
 
 a:visited,a {
-    color: inherit;
+    text-decoration: none;
 }
 
 body {
@@ -49,9 +49,16 @@ nav {
     height: 100%;
     max-height: 2rem;
 }
+.sandr0 {
+    height: 1em;
+    width: auto;
+}
 .right {
     grid-column: 2;
     text-align: right;
+}
+.hidden {
+    color: transparent !important;
 }
 
 img.client-work {
@@ -100,5 +107,48 @@ a.client-work {
 @media (min-width: 3840px) {
     img.client-work {
         width: 24%;
+    }
+}
+
+@font-face {
+    font-family:Source Code Pro;
+    font-style:normal;
+    font-weight:400;
+    font-display:swap;
+    src:url(code.woff2) format("woff2");
+    unicode-range:u+00??,
+    u+0131,
+    u+0152-0153,
+    u+02bb-02bc,
+    u+02c6,
+    u+02da,
+    u+02dc,
+    u+2000-206f,
+    u+2074,
+    u+20ac,
+    u+2122,
+    u+2191,
+    u+2193,
+    u+2212,
+    u+2215,
+    u+feff,
+    u+fffd
+}
+
+a.kompilers,a.kompilers:visited {
+    font-family:Source Code Pro,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;
+    color: #00ff75;
+    text-decoration: none;
+}
+.kompilers:after {
+    content:"_";
+    animation:blink 1.2s steps(2) infinite;
+}
+@keyframes blink {
+    0% {
+        visibility:hidden;
+    }
+    to {
+        visibility:visible;
     }
 }
