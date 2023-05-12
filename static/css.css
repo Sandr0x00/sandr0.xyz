@@ -110,6 +110,26 @@ a.client-work {
     }
 }
 
+.post > img {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 0.5rem;
+    vertical-align: middle;
+}
+.post > strong {
+    position: absolute;
+    left: 3rem;
+}
+.post > p {
+    margin-left: 3rem;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.post {
+    margin-bottom: 2rem;
+}
+
 @font-face {
     font-family:Source Code Pro;
     font-style:normal;

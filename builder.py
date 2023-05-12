@@ -89,6 +89,59 @@ for i in web_data:
 parts.append(Part("projects", "Personal Projects", content))
 
 #===========================================================
+# CTF
+#===========================================================
+
+ctf = {
+  "Stuff I created": [
+    ("archived", "zaj",
+    """A zero-day web challenge for hxp CTF 2022 targeting Apache Archiva 2.2.9. The challenge is based on a vulnerability I discovered which was assigned <a href="https://www.cve.org/CVERecord?id=CVE-2023-28158">CVE-2023-28158</a>. [<a href="https://2022.ctf.link/internal/challenge/b2ca2268-f49f-4103-9943-2a417244a955">challenge</a>, <a href="https://hxp.io/blog/100/hxp-CTF-2022-archived/">writeup</a>]"""),
+    ("required", "rev",
+    """A challenge for hxp CTF 2022 using the prototype pollution discussed in the challenge <a href="https://ctf.zeyu2001.com/2022/balsnctf-2022/2linenodejs">2linenodejs</a> as a way to obfuscate NodeJS code. [<a href="https://2022.ctf.link/internal/challenge/7e3e425c-865d-4025-9005-09806d951cca">challenge</a>, <a href="https://hxp.io/blog/103/hxp-CTF-2022-required/">writeup</a>]"""),
+    ("sqlite_web", "web",
+    """A web challenge for hxp CTF 2022 focusing on a insecure design choice in <a href="https://github.com/coleifer/sqlite-web">sqlite-web</a> leading to remote code execution. <a href="https://github.com/coleifer/sqlite-web/issues/111">Remains unfixed.</a> [<a href="https://2022.ctf.link/internal/challenge/dbb4626c-3390-43d2-88bf-4d4c22c33315">challenge</a>, <a href="https://hxp.io/blog/102/hxp-CTF-2022-sqlite_web/">writeup</a>]"""),
+    ("valentine", "web",
+    """A web challenge for hxp CTF 2022 exploring <a href="https://github.com/mde/ejs">ejs</a> 3.1.8 after <a href="https://eslam.io/posts/ejs-server-side-template-injection-rce/">CVE-2022-29078</a> was fixed. [<a href="https://2022.ctf.link/internal/challenge/8f5b680d-d57a-4609-94e9-37593f9d4f2a">challenge</a>, <a href="https://hxp.io/blog/101/hxp-CTF-2022-valentine/">short writeup</a>, <a href="https://github.com/ispoleet/ctf-writeups/tree/master/hxp_ctf_2022/required">extended writeup</a>]"""),
+    ("baba is you", "msc",
+    """A misc challenge for hxp CTF 2021 inspired by <a href="https://hempuli.com/baba/">baba is you</a> written in C for Gameboy. [<a href="https://2021.ctf.link/internal/challenge/52c2a607-7e05-456f-b8c0-68952304f2a4/">challenge</a>, <a href="https://baba.hxp.io/">scoreboard</a>, <a href="https://github.com/Sandr0x00/gameboy-is-you/blob/">source</a>, <a href="https://github.com/Sandr0x00/gameboy-is-you/blob/main/writeup/readme.md">writeup</a>]"""),
+    ("find the chicken", "msc",
+    """A gameboy challenge for hxp CTF 2020 written in C. Reverse the game and find the chicken. [<a href="https://2020.ctf.link/internal/challenge/7e09f315-2f7b-4f0a-bcaf-934cc298e263/">challenge</a>, <a href="https://chicken.hxp.io/">scoreboard</a>, <a href="https://github.com/Sandr0x00/find-the-chicken">source</a>, <a href="https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken">solve run</a>]"""),
+  ],
+  "Stuff I broke": [
+    ("PDF-Xfiltration", "",
+    """My <a href="https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration">writeup</a> to a challenge from Insomni'hack 2022 about breaking PDF signatures using JavaScript."""),
+    ("pypypypy", "",
+    """My <a href="https://hxp.io/blog/85/0CTFTCTF-2021-Quals-selected-writeups#pypypypy">writeup</a> to a python sandbox escape from 0CTF 2021 Quals."""),
+    ("Cloud Computing", "",
+    """My <a href="https://hxp.io/blog/74/0CTF%202020%20writeups#cloud-computing">writeup</a> for a PHP sandbox escape from 0CTF 2020 Quals."""),
+    ("Bonzi Scheme", "",
+    """My <a href="https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme">totally serious guide</a> of how to "hack hex with hyx" solving a challenge of PlaidCTF 2020."""),
+    ("PlayCAP", "",
+    """My <a href="https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup">writeup</a> for a challenge at Teaser Dragon CTF 2019 about reversing a PCAP to find pressed buttons of an XBOX controller."""),
+  ],
+}
+
+content = ""
+for ctf_name, ctf_challs in ctf.items():
+  assert '"' not in ctf_name
+  content += f"<h3>{ctf_name}</h3>"
+  for chall_name, chall_type, chall_desc in ctf_challs:
+    assert '"' not in chall_name
+    # assert '"' not in chall_writeup
+    content += f"""<div class="post">"""
+    if chall_type:
+      content += f"""<img src="/icon_{chall_type}.png">"""
+    content += f"""<strong>{chall_name}</strong><br/>
+<p class="desc">{chall_desc}</p>
+</div>\n"""
+
+parts.append(Part("ctf", "CTF Writeups", f"""
+<p>
+{content}
+</p>
+"""))
+
+#===========================================================
 # web dev
 #===========================================================
 
@@ -111,53 +164,6 @@ for i in web_data:
 parts.append(Part("web", "Freelance Work (Non NDA) / Web Development", content))
 # <a href="https://schreiner-suess.de" title="Website for Schreinerei Andreas Süß Fuchsberg"><img class="client-work" src="schreiner-suess.png" alt="schreiner-suess"></a>
 
-#===========================================================
-# CTF
-#===========================================================
-
-ctf = {
-  "hxp CTF 2022": [
-    ("archived", "https://hxp.io/blog/100/hxp-CTF-2022-archived/"),
-    ("required", "https://hxp.io/blog/103/hxp-CTF-2022-required/"),
-    ("sqlite_web", "https://hxp.io/blog/102/hxp-CTF-2022-sqlite_web/"),
-    ("valentine", "https://hxp.io/blog/101/hxp-CTF-2022-valentine/"),
-  ],
-  "Insomni'hack 2022": [
-    ("PDF-Xfiltration", "https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration")
-  ],
-  "hxp CTF 2021": [
-    ("gameboy is you", "https://github.com/Sandr0x00/gameboy-is-you/blob/main/writeup/readme.md")
-  ],
-  "0CTF 2021 Quals": [
-    ("pypypypy", "https://hxp.io/blog/85/0CTFTCTF-2021-Quals-selected-writeups#pypypypy")
-  ],
-  "hxp CTF 2020": [
-    ("find the chicken", "https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken")
-  ],
-  "0CTF 2020 Quals": [
-    ("Cloud Computing", "https://hxp.io/blog/74/0CTF%202020%20writeups#cloud-computing")
-  ],
-  "Plaid CTF 2020": [
-    ("Bonzi Scheme", "https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme")
-  ],
-  "Teaser Dragon CTF 2019": [
-    ("PlayCAP", "https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup")
-  ],
-}
-
-content = ""
-for i,j in ctf.items():
-  assert '"' not in i
-  for k,l in j:
-    assert '"' not in k
-    assert '"' not in l
-    content += f"""{i} - <a href="{l}">{k}</a><br>\n"""
-
-parts.append(Part("ctf", "CTF Writeups", f"""
-<p>
-{content}
-</p>
-"""))
 
 #===========================================================
 # fun
@@ -177,7 +183,6 @@ a:visited,a {
   color: #1a84ff
 }
 </style><br>
-<a href="#" onclick="function f(){}var a=f;for(var b=0;b<100000;++b){a=a.bind();Object.defineProperty(a,Symbol.hasInstance,{})}({})instanceof a;">This link may segfault your Chrome Tab</a> (Ref: <a href="https://twitter.com/GuidoVranken/status/1271059248861138944">@GuidoVranken</a>)
 """))
 
 
