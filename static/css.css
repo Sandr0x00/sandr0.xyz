@@ -54,7 +54,7 @@ nav {
     width: auto;
 }
 .right {
-    grid-column: 2;
+    grid-column: span 2;
     text-align: right;
 }
 .hidden {
@@ -110,6 +110,12 @@ a.client-work {
     }
 }
 
+h3 img {
+    display: inline-block;
+    height: 2rem;
+    margin: 0 0.5rem;
+    vertical-align: middle;
+}
 .post > img {
     display: inline-block;
     width: 2rem;

@@ -47,6 +47,8 @@ def svg(file_name):
 
 parts = []
 
+lnk = lambda url, to: f"""<a href="{url}">{to}</a>"""
+
 #===========================================================
 # about
 #===========================================================
@@ -93,38 +95,37 @@ parts.append(Part("projects", "Personal Projects", content))
 #===========================================================
 
 ctf = {
-  "Stuff I created": [
+  f"""Stuff I created for {lnk("https://ctf.link",'<img src="/hxp-ctf.png">')}""": [
     ("archived", "zaj",
-    """A zero-day web challenge for hxp CTF 2022 targeting Apache Archiva 2.2.9. The challenge is based on a vulnerability I discovered which was assigned <a href="https://www.cve.org/CVERecord?id=CVE-2023-28158">CVE-2023-28158</a>. [<a href="https://2022.ctf.link/internal/challenge/b2ca2268-f49f-4103-9943-2a417244a955">challenge</a>, <a href="https://hxp.io/blog/100/hxp-CTF-2022-archived/">writeup</a>]"""),
+    f"""A zero-day web challenge for hxp CTF 2022 targeting Apache Archiva 2.2.9. The challenge is based on a vulnerability I discovered which was assigned {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158","CVE-2023-28158")}. [{lnk("https://2022.ctf.link/internal/challenge/b2ca2268-f49f-4103-9943-2a417244a955","challenge")}, {lnk("https://hxp.io/blog/100/hxp-CTF-2022-archived/","writeup")}]"""),
     ("required", "rev",
-    """A challenge for hxp CTF 2022 using the prototype pollution discussed in the challenge <a href="https://ctf.zeyu2001.com/2022/balsnctf-2022/2linenodejs">2linenodejs</a> as a way to obfuscate NodeJS code. [<a href="https://2022.ctf.link/internal/challenge/7e3e425c-865d-4025-9005-09806d951cca">challenge</a>, <a href="https://hxp.io/blog/103/hxp-CTF-2022-required/">writeup</a>]"""),
+    f"""A challenge for hxp CTF 2022 using the prototype pollution discussed in the challenge {lnk("https://ctf.zeyu2001.com/2022/balsnctf-2022/2linenodejs","2linenodejs")} as a way to obfuscate NodeJS code. [{lnk("https://2022.ctf.link/internal/challenge/7e3e425c-865d-4025-9005-09806d951cca","challenge")}, {lnk("https://hxp.io/blog/103/hxp-CTF-2022-required/","writeup")}]"""),
     ("sqlite_web", "web",
-    """A web challenge for hxp CTF 2022 focusing on a insecure design choice in <a href="https://github.com/coleifer/sqlite-web">sqlite-web</a> leading to remote code execution. <a href="https://github.com/coleifer/sqlite-web/issues/111">Remains unfixed.</a> [<a href="https://2022.ctf.link/internal/challenge/dbb4626c-3390-43d2-88bf-4d4c22c33315">challenge</a>, <a href="https://hxp.io/blog/102/hxp-CTF-2022-sqlite_web/">writeup</a>]"""),
+    f"""A web challenge for hxp CTF 2022 focusing on a insecure design choice in {lnk("https://github.com/coleifer/sqlite-web","sqlite-web")} leading to remote code execution. {lnk("https://github.com/coleifer/sqlite-web/issues/111","Remains unfixed.")} [{lnk("https://2022.ctf.link/internal/challenge/dbb4626c-3390-43d2-88bf-4d4c22c33315","challenge")}, {lnk("https://hxp.io/blog/102/hxp-CTF-2022-sqlite_web/","writeup")}]"""),
     ("valentine", "web",
-    """A web challenge for hxp CTF 2022 exploring <a href="https://github.com/mde/ejs">ejs</a> 3.1.8 after <a href="https://eslam.io/posts/ejs-server-side-template-injection-rce/">CVE-2022-29078</a> was fixed. [<a href="https://2022.ctf.link/internal/challenge/8f5b680d-d57a-4609-94e9-37593f9d4f2a">challenge</a>, <a href="https://hxp.io/blog/101/hxp-CTF-2022-valentine/">short writeup</a>, <a href="https://github.com/ispoleet/ctf-writeups/tree/master/hxp_ctf_2022/required">extended writeup</a>]"""),
+    f"""A web challenge for hxp CTF 2022 exploring {lnk("https://github.com/mde/ejs","ejs")} 3.1.8 after {lnk("https://eslam.io/posts/ejs-server-side-template-injection-rce/","CVE-2022-29078")} was fixed. [{lnk("https://2022.ctf.link/internal/challenge/8f5b680d-d57a-4609-94e9-37593f9d4f2a","challenge")}, {lnk("https://hxp.io/blog/101/hxp-CTF-2022-valentine/","short writeup")}, {lnk("https://github.com/ispoleet/ctf-writeups/tree/master/hxp_ctf_2022/required","extended writeup")}]"""),
     ("baba is you", "msc",
-    """A misc challenge for hxp CTF 2021 inspired by <a href="https://hempuli.com/baba/">baba is you</a> written in C for Gameboy. [<a href="https://2021.ctf.link/internal/challenge/52c2a607-7e05-456f-b8c0-68952304f2a4/">challenge</a>, <a href="https://baba.hxp.io/">scoreboard</a>, <a href="https://github.com/Sandr0x00/gameboy-is-you/blob/">source</a>, <a href="https://github.com/Sandr0x00/gameboy-is-you/blob/main/writeup/readme.md">writeup</a>]"""),
+    f"""A misc challenge for hxp CTF 2021 inspired by {lnk("https://hempuli.com/baba/","baba is you")} written in C for Gameboy. [{lnk("https://2021.ctf.link/internal/challenge/52c2a607-7e05-456f-b8c0-68952304f2a4/","challenge")}, {lnk("https://baba.hxp.io/","scoreboard")}, {lnk("https://github.com/Sandr0x00/gameboy-is-you/blob/","source")}, {lnk("https://github.com/Sandr0x00/gameboy-is-you/blob/main/writeup/readme.md","writeup")}]"""),
     ("find the chicken", "msc",
-    """A gameboy challenge for hxp CTF 2020 written in C. Reverse the game and find the chicken. [<a href="https://2020.ctf.link/internal/challenge/7e09f315-2f7b-4f0a-bcaf-934cc298e263/">challenge</a>, <a href="https://chicken.hxp.io/">scoreboard</a>, <a href="https://github.com/Sandr0x00/find-the-chicken">source</a>, <a href="https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken">solve run</a>]"""),
+    f"""A gameboy challenge for hxp CTF 2020 written in C. Reverse the game and find the chicken. [{lnk("https://2020.ctf.link/internal/challenge/7e09f315-2f7b-4f0a-bcaf-934cc298e263/","challenge")}, {lnk("https://chicken.hxp.io/","scoreboard")}, {lnk("https://github.com/Sandr0x00/find-the-chicken","source")}, {lnk("https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken","solution run")}]"""),
   ],
-  "Stuff I broke": [
+  f"""Stuff I broke with {lnk("https://hxp.io",'<img src="/hxp.png">')} (excerpt)""": [
     ("PDF-Xfiltration", "",
-    """My <a href="https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration">writeup</a> to a challenge from Insomni'hack 2022 about breaking PDF signatures using JavaScript."""),
+    f"""My {lnk("https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration","writeup")} to a challenge from Insomni'hack 2022 about breaking PDF signatures using JavaScript."""),
     ("pypypypy", "",
-    """My <a href="https://hxp.io/blog/85/0CTFTCTF-2021-Quals-selected-writeups#pypypypy">writeup</a> to a python sandbox escape from 0CTF 2021 Quals."""),
+    f"""My {lnk("https://hxp.io/blog/85/0CTFTCTF-2021-Quals-selected-writeups#pypypypy","writeup")} to a python sandbox escape from 0CTF 2021 Quals."""),
     ("Cloud Computing", "",
-    """My <a href="https://hxp.io/blog/74/0CTF%202020%20writeups#cloud-computing">writeup</a> for a PHP sandbox escape from 0CTF 2020 Quals."""),
+    f"""My {lnk("https://hxp.io/blog/74/0CTF%202020%20writeups#cloud-computing","writeup")} for a PHP sandbox escape from 0CTF 2020 Quals."""),
     ("Bonzi Scheme", "",
-    """My <a href="https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme">totally serious guide</a> of how to "hack hex with hyx" solving a challenge of PlaidCTF 2020."""),
+    f"""My {lnk("https://hxp.io/blog/71/PlaidCTF-2020-Bonzi-Scheme","totally serious guide")} of how to "hack hex with hyx" solving a challenge of PlaidCTF 2020."""),
     ("PlayCAP", "",
-    """My <a href="https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup">writeup</a> for a challenge at Teaser Dragon CTF 2019 about reversing a PCAP to find pressed buttons of an XBOX controller."""),
+    f"""My {lnk("https://hxp.io/blog/59/Teaser-Dragon-CTF-2019-PlayCAP-writeup","writeup")} for a challenge at Teaser Dragon CTF 2019 about reversing a PCAP to find pressed buttons of an XBOX controller."""),
   ],
 }
 
 content = ""
-for ctf_name, ctf_challs in ctf.items():
-  assert '"' not in ctf_name
-  content += f"<h3>{ctf_name}</h3>"
+for title, ctf_challs in ctf.items():
+  content += f"<h3>{title}</h3>"
   for chall_name, chall_type, chall_desc in ctf_challs:
     assert '"' not in chall_name
     # assert '"' not in chall_writeup
@@ -256,31 +257,14 @@ page += """</div></nav>
 
 <div class="right">
 <div>
+<a href="https://www.linkedin.com/in/sandr0x00/"><i class="fab fa-linkedin fa-2x"></i></a>
 <a href="https://twitter.com/Sandr0x00"><i class="fab fa-twitter fa-2x"></i></a>
 <a href="https://github.com/Sandr0x00"><i class="fab fa-github fa-2x"></i></a>
 <a rel="me" href="https://infosec.exchange/@sandr0"><i class="fab fa-mastodon fa-2x"></i></a>
 </div>
 </div>
 """
-comment = """
-  <div class="container">
-    <div class="row">
-      <div id="about" class="col-sm-4">
-        I'm - still - a bavarian computer science student at <a href="https://www.tum.de/en/">TUM</a>. In my spare time I do some coding (see projects) and <a href="https://hxp.io/">ctf</a> (see writeups).
-        <h4>About</h4>
-      </div>
-    </div>
-    <div class="row">
-      <div id="fun" class="col-sm-12">
-        <b></b>
-        <br>
-        <br>
-        <h4>Fun</h4>
-      </div>
-    </div>
-    </div>
-  </div>
-"""
+
 page += """
   <link rel="preload" href="/fontawesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/fontawesome/css/all.min.css">
