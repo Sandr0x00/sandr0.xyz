@@ -9,7 +9,6 @@ nohup:
 	@cat pid
 	@printf "\n"
 
-
 build-html:
 	./builder.py
 
@@ -21,7 +20,7 @@ build: build-server build-html
 rebuild: build run
 
 report:
-	goaccess access.log -a -o secured/report.html
+	./report.py
 
 run:
 	./run.sh

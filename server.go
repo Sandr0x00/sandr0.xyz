@@ -223,33 +223,23 @@ func cacheZipMiddleware(next http.Handler) http.Handler {
 
 func main() {
 	secureMiddleware := secure.New(secure.Options{
-		AllowedHosts:         []string{"sandr0\\.xyz", ".*\\.sandr0\\.xyz"},
-		AllowedHostsAreRegex: true,
+		AllowedHosts:          []string{"sandr0\\.xyz", ".*\\.sandr0\\.xyz"},
+		AllowedHostsAreRegex:  true,
 		// HostsProxyHeaders:    []string{"X-Forwarded-Host"},
-		SSLRedirect: true,
-		SSLHost:     "sandr0.xyz",
+		SSLRedirect:           true,
+		SSLHost:               "sandr0.xyz",
 		// SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
-		STSSeconds:           31536000,
-		STSIncludeSubdomains: true,
-		STSPreload:           true,
-		ForceSTSHeader:       true,
-		FrameDeny:            true,
-		ContentTypeNosniff:   true,
-		BrowserXssFilter:     true,
-		ContentSecurityPolicy: `
-			default-src 'self';
-			font-src 'self';
-			img-src 'self';
-			style-src 'self' 'unsafe-inline';
-			script-src 'self' 'unsafe-inline';
-			base-uri 'none';
-			form-action 'self';
-			frame-ancestors: 'none';
-		`,
-		// PublicKey:             `pin-sha256="base64+primary=="; pin-sha256="base64+backup=="; max-age=5184000; includeSubdomains; report-uri="https://www.example.com/hpkp-report"`,
-		// ReferrerPolicy: "same-origin",
-		FeaturePolicy: "vibrate 'none'; geolocation 'none'; speaker 'none'; camera 'none'; microphone 'none'; notifications 'none';",
-		IsDevelopment: os.Getenv("DEV") == "true",
+		STSSeconds:            31536000,
+		STSIncludeSubdomains:  true,
+		STSPreload:            true,
+		ForceSTSHeader:        true,
+		FrameDeny:             true,
+		ContentTypeNosniff:    true,
+		BrowserXssFilter:      true,
+		PermissionsPolicy:     "",
+		ContentSecurityPolicy: "default-src 'self'; font-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors: 'none';",
+		ReferrerPolicy:        "strict-origin",
+		IsDevelopment:         os.Getenv("DEV") == "true",
 	})
 
 	var err error
@@ -281,6 +271,7 @@ func main() {
 	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))
 
 	if os.Getenv("DEV") != "true" {
+		// start production
 		m := autocert.Manager{
 			Prompt:     autocert.AcceptTOS,
 			HostPolicy: autocert.HostWhitelist("sandr0.xyz", "www.sandr0.xyz"),
@@ -301,12 +292,11 @@ func main() {
 
 		// serve HTTPS
 		log.Fatal(server.ListenAndServeTLS("", ""))
+	} else {
+		// start locally
+		hostname, _ := os.Hostname()
+		fmt.Printf("Starting server on http://%s:8081\n", hostname)
+		log.Fatal(http.ListenAndServe(":8081", nil))
 	}
 
-	hostname, _ := os.Hostname()
-	fmt.Printf("Starting server on http://%s:8081\n", hostname)
-	err = http.ListenAndServe(":8081", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
