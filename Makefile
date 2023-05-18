@@ -1,13 +1,9 @@
 kill:
-	@kill `cat pid`
-	@ps -ef | grep "server"
+	@kill `pidof server`
+	@ps -ef | grep "serve[r]"
 
 nohup:
 	@nohup ./run.sh &
-	@printf ""
-	@tail -n 2 nohup.out
-	@cat pid
-	@printf "\n"
 
 build-html:
 	./builder.py
