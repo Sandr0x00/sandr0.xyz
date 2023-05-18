@@ -3,6 +3,7 @@
 /secured.json
 /access.log
 /static/img
+/static/icon_*.webp
 /static/index.html
 /static/fontawesome
 /env/

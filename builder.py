@@ -34,6 +34,13 @@ def resize(file_name):
     im.save(f"static/img/{file_name}-{s}.webp", "webp")
   return (f"img/{file_name}.{ext}", ', '.join(sizes))
 
+def icon(file_name, height):
+  im = Image.open(f"resources/{file_name}.png")
+  if os.path.exists(f"static/{file_name}.webp"):
+    return
+  im.thumbnail((1000, height))
+  im.save(f"static/{file_name}.webp", "webp")
+
 def svg(file_name):
     with open(file_name, "r") as f:
         img = f.read()
@@ -95,7 +102,7 @@ parts.append(Part("projects", "Personal Projects", content))
 #===========================================================
 
 ctf = {
-  f"""Stuff I created for {lnk("https://ctf.link",'<img src="/hxp-ctf.png" alt="hxp CTF logo">')}""": [
+  f"""Stuff I created for {lnk("https://ctf.link",'<img src="/icon_hxp-ctf.webp" alt="hxp CTF logo">')}""": [
     ("archived", "zaj",
     f"""A zero-day web challenge for hxp CTF 2022 targeting Apache Archiva 2.2.9. The challenge is based on a vulnerability I discovered which was assigned {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158","CVE-2023-28158")}. [{lnk("https://2022.ctf.link/internal/challenge/b2ca2268-f49f-4103-9943-2a417244a955","challenge")}, {lnk("https://hxp.io/blog/100/hxp-CTF-2022-archived/","writeup")}]"""),
     ("required", "rev",
@@ -109,7 +116,7 @@ ctf = {
     ("find the chicken", "msc",
     f"""A gameboy challenge for hxp CTF 2020 written in C. Reverse the game and find the chicken. [{lnk("https://2020.ctf.link/internal/challenge/7e09f315-2f7b-4f0a-bcaf-934cc298e263/","challenge")}, {lnk("https://chicken.hxp.io/","scoreboard")}, {lnk("https://github.com/Sandr0x00/find-the-chicken","source")}, {lnk("https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken","solution run")}]"""),
   ],
-  f"""Stuff I broke with {lnk("https://hxp.io",'<img src="/hxp.png" alt="hxp logo">')} (excerpt)""": [
+  f"""Stuff I broke with {lnk("https://hxp.io",'<img src="/icon_hxp.webp" alt="hxp logo">')} (excerpt)""": [
     ("PDF-Xfiltration", "",
     f"""My {lnk("https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration","writeup")} to a challenge from Insomni'hack 2022 about breaking PDF signatures using JavaScript."""),
     ("pypypypy", "",
@@ -123,6 +130,9 @@ ctf = {
   ],
 }
 
+for ico in ["icon_web", "icon_zaj", "icon_hxp-ctf", "icon_hxp", "icon_msc", "icon_rev"]:
+  icon(ico, 100)
+
 content = ""
 for title, ctf_challs in ctf.items():
   content += f"<h3>{title}</h3>"
@@ -131,7 +141,7 @@ for title, ctf_challs in ctf.items():
     # assert '"' not in chall_writeup
     content += f"""<div class="post">"""
     if chall_type:
-      content += f"""<img src="/icon_{chall_type}.png" alt="hxp CTF icon for {chall_type} challenges">"""
+      content += f"""<img src="/icon_{chall_type}.webp" alt="hxp CTF icon for {chall_type} challenges">"""
     content += f"""<strong>{chall_name}</strong><br/>
 <p class="desc">{chall_desc}</p>
 </div>\n"""
