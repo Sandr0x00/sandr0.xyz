@@ -236,8 +236,8 @@ func main() {
 		FrameDeny:             true,
 		ContentTypeNosniff:    true,
 		BrowserXssFilter:      true,
-		PermissionsPolicy:     "",
-		ContentSecurityPolicy: "default-src 'self'; font-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors: 'none';",
+		PermissionsPolicy:     "camera=(), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()",
+		ContentSecurityPolicy: "default-src 'self'; font-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';",
 		ReferrerPolicy:        "strict-origin",
 		IsDevelopment:         os.Getenv("DEV") == "true",
 	})

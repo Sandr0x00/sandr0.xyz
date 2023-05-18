@@ -95,7 +95,7 @@ parts.append(Part("projects", "Personal Projects", content))
 #===========================================================
 
 ctf = {
-  f"""Stuff I created for {lnk("https://ctf.link",'<img src="/hxp-ctf.png">')}""": [
+  f"""Stuff I created for {lnk("https://ctf.link",'<img src="/hxp-ctf.png" alt="hxp CTF logo">')}""": [
     ("archived", "zaj",
     f"""A zero-day web challenge for hxp CTF 2022 targeting Apache Archiva 2.2.9. The challenge is based on a vulnerability I discovered which was assigned {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158","CVE-2023-28158")}. [{lnk("https://2022.ctf.link/internal/challenge/b2ca2268-f49f-4103-9943-2a417244a955","challenge")}, {lnk("https://hxp.io/blog/100/hxp-CTF-2022-archived/","writeup")}]"""),
     ("required", "rev",
@@ -109,7 +109,7 @@ ctf = {
     ("find the chicken", "msc",
     f"""A gameboy challenge for hxp CTF 2020 written in C. Reverse the game and find the chicken. [{lnk("https://2020.ctf.link/internal/challenge/7e09f315-2f7b-4f0a-bcaf-934cc298e263/","challenge")}, {lnk("https://chicken.hxp.io/","scoreboard")}, {lnk("https://github.com/Sandr0x00/find-the-chicken","source")}, {lnk("https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken","solution run")}]"""),
   ],
-  f"""Stuff I broke with {lnk("https://hxp.io",'<img src="/hxp.png">')} (excerpt)""": [
+  f"""Stuff I broke with {lnk("https://hxp.io",'<img src="/hxp.png" alt="hxp logo">')} (excerpt)""": [
     ("PDF-Xfiltration", "",
     f"""My {lnk("https://hxp.io/blog/93/Insomnihack-2022-PDF-Xfiltration","writeup")} to a challenge from Insomni'hack 2022 about breaking PDF signatures using JavaScript."""),
     ("pypypypy", "",
@@ -131,7 +131,7 @@ for title, ctf_challs in ctf.items():
     # assert '"' not in chall_writeup
     content += f"""<div class="post">"""
     if chall_type:
-      content += f"""<img src="/icon_{chall_type}.png">"""
+      content += f"""<img src="/icon_{chall_type}.png" alt="hxp CTF icon for {chall_type} challenges">"""
     content += f"""<strong>{chall_name}</strong><br/>
 <p class="desc">{chall_desc}</p>
 </div>\n"""
@@ -196,35 +196,40 @@ img = re.sub(r"<svg",f'<svg class="logo"',img)
 
 page = f"""
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="UTF-8">
+  <meta charset="UTF-8">
   <link rel="stylesheet" href="css.css">
+  <meta name="description" content="Personal webpage of sandr0.">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- generics -->
-    <link rel="icon" href="favicon-32.png" sizes="32x32">
-    <link rel="icon" href="favicon-57.png" sizes="57x57">
-    <link rel="icon" href="favicon-76.png" sizes="76x76">
-    <link rel="icon" href="favicon-96.png" sizes="96x96">
-    <link rel="icon" href="favicon-128.png" sizes="128x128">
-    <link rel="icon" href="favicon-192.png" sizes="192x192">
-    <link rel="icon" href="favicon-228.png" sizes="228x228">
+  <!-- generics -->
+  <link rel="icon" href="favicon-32.png" sizes="32x32">
+  <link rel="icon" href="favicon-57.png" sizes="57x57">
+  <link rel="icon" href="favicon-76.png" sizes="76x76">
+  <link rel="icon" href="favicon-96.png" sizes="96x96">
+  <link rel="icon" href="favicon-128.png" sizes="128x128">
+  <link rel="icon" href="favicon-192.png" sizes="192x192">
+  <link rel="icon" href="favicon-228.png" sizes="228x228">
 
-    <!-- Android -->
-    <link rel="shortcut icon" sizes="196x196" href="favicon-196.png">
+  <!-- Android -->
+  <link rel="shortcut icon" sizes="196x196" href="favicon-196.png">
 
-    <!-- iOS -->
-    <link rel="apple-touch-icon" href="favicon-120.png" sizes="120x120">
-    <link rel="apple-touch-icon" href="favicon-152.png" sizes="152x152">
-    <link rel="apple-touch-icon" href="favicon-180.png" sizes="180x180">
+  <!-- iOS -->
+  <link rel="apple-touch-icon" href="favicon-120.png" sizes="120x120">
+  <link rel="apple-touch-icon" href="favicon-152.png" sizes="152x152">
+  <link rel="apple-touch-icon" href="favicon-180.png" sizes="180x180">
 
-    <!-- Windows 8 IE 10-->
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="msapplication-TileImage" content="favicon-144.png">
+  <!-- Windows 8 IE 10-->
+  <meta name="msapplication-TileColor" content="#FFFFFF">
+  <meta name="msapplication-TileImage" content="favicon-144.png">
 
-    <!-- Windows 8.1 + IE11 and above -->
-    <meta name="msapplication-config" content="browserconfig.xml" />
+  <!-- Windows 8.1 + IE11 and above -->
+  <meta name="msapplication-config" content="browserconfig.xml" />
   <title>Sandr0.xyz</title>
+
+  <!-- OG -->
+  <meta property="og:image" content="https://sandr0.xyz/favicon-228.png" />
+  <meta property="og:type" content="website" />
 </head>
 <body>
     <main>
