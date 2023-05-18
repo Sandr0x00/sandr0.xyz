@@ -247,9 +247,6 @@ func main() {
 	must(err)
 	defer accessLog.Close()
 
-	err = ioutil.WriteFile("pid", []byte(fmt.Sprintf("%d", os.Getpid())), 0644)
-	must(err)
-
 	r := mux.NewRouter()
 
 	r.Use(secureMiddleware.Handler)
