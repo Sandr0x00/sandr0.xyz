@@ -70,7 +70,7 @@ about_data = [
   '<span class="hidden">I am</span> a <a href="mailto:job@sandr0.xyz">freelancer</a>',
   '<span class="hidden">I am</span> a <a href="https://www.cve.org/CVERecord?id=CVE-2023-28158">hacker</a>',
   '<span class="hidden">I am</span> a <a href="https://github.com/Sandr0x00">developer</a>',
-  '<span class="hidden">I am</span> a <a href="/recipes">cook</a>',
+  '<span class="hidden">I am</span> a <a href="https://recipes.sandr0.xyz">cook</a>',
 ]
 
 parts.append(Part("about", "About", '<br/>'.join(about_data)))
@@ -81,8 +81,8 @@ parts.append(Part("about", "About", '<br/>'.join(about_data)))
 
 web_data = [
   # website, description, file
-  ["/recipes", "My personal recipe collection", "recipes.jpg"],
-  ["/series", "The status of my series", "series.jpg"],
+  ["https://recipes.sandr0.xyz", "My personal recipe collection", "recipes.jpg"],
+  ["https://series-tracker.sandr0.xyz", "The status of my series", "series.jpg"],
   ["https://github.com/Sandr0x00/find-the-chicken", "Gameboy CTF challenge for hxp CTF 2020", "find-the-chicken.png"],
   ["https://github.com/Sandr0x00/gameboy-is-you", "Gameboy CTF challenge for hxp CTF 2021", "gameboy-is-you.png"],
 ]

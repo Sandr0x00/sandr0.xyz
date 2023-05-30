@@ -39,10 +39,20 @@ func must(err error) {
 	}
 }
 
+var subDomains = map[string]string{
+	"recipes.sandr0.xyz":        "http://localhost:8082",
+	"series-tracker.sandr0.xyz": "http://localhost:8083",
+}
+
 // Serve a reverse proxy for a given url
-var recipeProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var proxyHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	target, ok := subDomains[r.Host]
+	if !ok {
+		return
+	}
+
 	// parse the url
-	url, _ := url.Parse("http://localhost:8082")
+	url, _ := url.Parse(target)
 
 	// create the reverse proxy
 	proxy := httputil.NewSingleHostReverseProxy(url)
@@ -50,43 +60,7 @@ var recipeProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	// Update the headers to allow for SSL redirection
 	r.URL.Host = url.Host
 	r.URL.Scheme = url.Scheme
-	r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
-	r.Host = url.Host
-
-	// Note that ServeHttp is non blocking and uses a go routine under the hood
-	proxy.ServeHTTP(w, r)
-})
-
-// Serve a reverse proxy for a given url
-var seriesProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// parse the url
-	url, _ := url.Parse("http://localhost:8083")
-
-	// create the reverse proxy
-	proxy := httputil.NewSingleHostReverseProxy(url)
-
-	// Update the headers to allow for SSL redirection
-	r.URL.Host = url.Host
-	r.URL.Scheme = url.Scheme
-	r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
-	r.Host = url.Host
-
-	// Note that ServeHttp is non blocking and uses a go routine under the hood
-	proxy.ServeHTTP(w, r)
-})
-
-// Serve a reverse proxy for a given url
-var phpProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	// parse the url
-	url, _ := url.Parse("http://localhost:8088")
-
-	// create the reverse proxy
-	proxy := httputil.NewSingleHostReverseProxy(url)
-
-	// Update the headers to allow for SSL redirection
-	r.URL.Host = url.Host
-	r.URL.Scheme = url.Scheme
-	r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
+	r.Header.Set("X-Forwarded-Host", r.Host)
 	r.Host = url.Host
 
 	// Note that ServeHttp is non blocking and uses a go routine under the hood
@@ -205,18 +179,15 @@ func auth(handler http.Handler) http.Handler {
 	})
 }
 
-
-
 var (
 	cacheSince = time.Now().Format(http.TimeFormat)
-	cacheUntil = time.Now().AddDate(30, 0, 0).Format(http.TimeFormat)
 )
 
 func cacheZipMiddleware(next http.Handler) http.Handler {
 	return gziphandler.GzipHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "max-age:2592000")
+		w.Header().Set("Cache-Control", "max-age:604800")
 		w.Header().Set("Last-Modified", cacheSince)
-		w.Header().Set("Expires", cacheUntil)
+		w.Header().Set("Expires", time.Now().AddDate(0, 0, 7).Format(http.TimeFormat))
 		next.ServeHTTP(w, r)
 	}))
 }
@@ -250,29 +221,26 @@ func main() {
 
 	r := mux.NewRouter()
 
-	r.Use(secureMiddleware.Handler)
+	// subdomains
+	for key, _ := range subDomains {
+		r.Host(key).Handler(proxyHandler)
+	}
 
-	// no securemiddleware in shared
-	// r.HandlerFunc
+	// paths
 	r.Handle("/secured", Redirect("/secured/"))
 	r.PathPrefix("/secured/").Handler(http.StripPrefix("/secured/", auth(cacheZipMiddleware(http.FileServer(http.Dir("secured"))))))
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", cacheZipMiddleware(http.FileServer(http.Dir("shared")))))
-	r.Handle("/recipes", Redirect("/recipes/"))
-	r.PathPrefix("/recipes/").Handler(http.StripPrefix("/recipes/", recipeProxy))
-	r.Handle("/php", Redirect("/php/"))
-	r.PathPrefix("/php/").Handler(http.StripPrefix("/php/", phpProxy))
-	r.Handle("/series", Redirect("/series/"))
-	r.PathPrefix("/series/").Handler(http.StripPrefix("/series/", seriesProxy))
 	r.Handle("/cal", calProxy)
 	r.Handle("/mijia", mijiaProxy)
-	r.PathPrefix("/").Handler(cacheZipMiddleware(http.FileServer(http.Dir("static"))))
+	r.PathPrefix("/").Handler(secureMiddleware.Handler(cacheZipMiddleware(http.FileServer(http.Dir("static")))))
+	// logger logs also subdomains
 	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))
 
 	if os.Getenv("DEV") != "true" {
 		// start production
 		m := autocert.Manager{
 			Prompt:     autocert.AcceptTOS,
-			HostPolicy: autocert.HostWhitelist("sandr0.xyz", "www.sandr0.xyz"),
+			HostPolicy: autocert.HostWhitelist("sandr0.xyz", "www.sandr0.xyz", "series-tracker.sandr0.xyz", "recipes.sandr0.xyz"),
 			Cache:      autocert.DirCache("certs"),
 		}
 		server := &http.Server{
