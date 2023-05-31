@@ -116,6 +116,20 @@ h3 img {
     margin: 0 0.5rem;
     vertical-align: middle;
 }
+
+#about img, #about i {
+    display: inline-block;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 0.5rem;
+    vertical-align: middle;
+}
+
+#about .kompilers {
+    vertical-align: middle;
+    font-size: 2rem;
+}
+
 .post > img {
     display: inline-block;
     width: 2rem;

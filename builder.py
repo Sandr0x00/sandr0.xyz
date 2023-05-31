@@ -64,16 +64,16 @@ img = svg("resources/sandr0.svg")
 img = re.sub(r"<svg",f'<svg class="sandr0"',img)
 
 about_data = [
-  f'I am {img}',
-  '<span class="hidden">I am</span> a <a href="https://hxp.io">CTF player</a>',
-  '<span class="hidden">I am</span> a <a class="kompilers" href="https://kompilers.com/">kompiler</a>',
-  '<span class="hidden">I am</span> a <a href="mailto:job@sandr0.xyz">freelancer</a>',
-  '<span class="hidden">I am</span> a <a href="https://www.cve.org/CVERecord?id=CVE-2023-28158">hacker</a>',
-  '<span class="hidden">I am</span> a <a href="https://github.com/Sandr0x00">developer</a>',
-  '<span class="hidden">I am</span> a <a href="https://recipes.sandr0.xyz">cook</a>',
+  '<a href="https://hxp.io" title="hxp"><img src="/icon_hxp.webp" alt="hxp logo"></a>',
+  '<a class="kompilers" href="https://kompilers.com/" title="kompilers">k</a>',
+  '<a href="mailto:freelancing@sandr0.xyz" title="Hire me as a freelancer"><i class="fas fa-laptop-code fa-2x"></i></a>',
+  '<a href="https://github.com/Sandr0x00" title="Github"><i class="fab fa-github fa-2x"></i></a>',
+  '<a href="https://www.linkedin.com/in/sandr0x00/" title="LinkedIn"><i class="fab fa-linkedin fa-2x"></i></a>',
+  '<a href="https://twitter.com/Sandr0x00" title="Twitter"><i class="fab fa-twitter fa-2x"></i></a>',
+  '<a rel="me" href="https://infosec.exchange/@sandr0" title="Mastodon"><i class="fab fa-mastodon fa-2x"></i></a>',
 ]
 
-parts.append(Part("about", "About", '<br/>'.join(about_data)))
+parts.append(Part("about", "About", " | ".join(about_data)))
 
 #===========================================================
 # projects
@@ -268,17 +268,7 @@ for part in parts:
     <a class="nav-item" href="#{part.id}" title="{part.title}">{img}</a>
     """
 
-page += """</div></nav>
-
-<div class="right">
-<div>
-<a href="https://www.linkedin.com/in/sandr0x00/"><i class="fab fa-linkedin fa-2x"></i></a>
-<a href="https://twitter.com/Sandr0x00"><i class="fab fa-twitter fa-2x"></i></a>
-<a href="https://github.com/Sandr0x00"><i class="fab fa-github fa-2x"></i></a>
-<a rel="me" href="https://infosec.exchange/@sandr0"><i class="fab fa-mastodon fa-2x"></i></a>
-</div>
-</div>
-"""
+page += """</div></nav>"""
 
 page += """
   <link rel="preload" href="/fontawesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin>

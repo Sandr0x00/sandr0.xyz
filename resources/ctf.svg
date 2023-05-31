@@ -1,73 +1,24 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="78.496094mm"
    height="87.981522mm"
    viewBox="0 0 78.496094 87.981522"
-   version="1.1"
-   id="svg8"
-   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07, custom)"
-   sodipodi:docname="ctf.svg">
-  <defs
-     id="defs2" />
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="0.35"
-     inkscape:cx="269.76764"
-     inkscape:cy="100.55001"
-     inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
-     inkscape:document-rotation="0"
-     showgrid="false"
-     inkscape:window-width="896"
-     inkscape:window-height="996"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1" />
-  <metadata
-     id="metadata5">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
+   id="svg8">
   <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-49.954335,-121.56281)">
     <path
        style="fill:#803300;stroke:#6b2300;stroke-width:4.99999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 60.177435,157.89545 17.21833,45.19759"
-       id="path1130"
-       sodipodi:nodetypes="cc" />
+       id="path1130" />
     <path
       class="lol"
        d="m 89.259195,130.87783 c -8.33051,0 -14.95706,3.10502 -19.87962,9.31502 -4.88472,6.21001 -7.32707,14.67305 -7.32707,25.38912 0,10.67819 2.44235,19.12229 7.32707,25.33231 4.92256,6.21003 11.54911,9.31504 19.87962,9.31504 8.33049,0 14.919175,-3.10501 19.766005,-9.31504 4.88472,-6.21002 7.32708,-14.65412 7.32708,-25.33231 0,-10.71607 -2.44236,-19.17911 -7.32708,-25.38912 -4.84683,-6.21 -11.435515,-9.31502 -19.766005,-9.31502 z m 0,-9.31502 c 11.889895,0 21.394255,3.99486 28.513055,11.98457 7.11879,7.95186 10.67818,18.63003 10.67818,32.03459 0,13.36667 -3.55939,24.04486 -10.67818,32.03458 -7.1188,7.95186 -16.62316,11.92778 -28.513055,11.92778 -11.92778,0 -21.46998,-3.97592 -28.62666,-11.92778 -7.11879,-7.95183 -10.6782,-18.63002 -10.6782,-32.03458 0,-13.40456 3.55941,-24.08273 10.6782,-32.03459 7.15668,-7.98971 16.69888,-11.98457 28.62666,-11.98457 z"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:50.8px;line-height:1.25;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;letter-spacing:0px;word-spacing:0px;fill:#020202;fill-opacity:1;stroke:none;stroke-width:0.605856"
-       id="path1102"
-       sodipodi:nodetypes="scscscscsscscscscs" />
+       id="path1102" />
     <path
        id="path951-7"
        style="opacity:1;mix-blend-mode:normal;fill:#010101;fill-opacity:1;stroke:#000000;stroke-width:0.196372;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="m 124.4472,161.94943 c 0,8.23005 -6.67177,13.31431 -14.90182,13.31431 -8.02096,-0.60283 -12.489314,-4.04432 -19.843754,-4.13905 -8.23005,0 -14.901811,5.08427 -14.901811,13.31432 l -10.58333,-27.78125 c 0,-8.23004 6.8079,-13.44731 15.037941,-13.44731 7.77627,0.10915 12.625009,4.0558 19.707619,4.27204 8.230055,0 14.901825,-5.08426 14.901825,-13.31431 v 0 l 10.58333,27.78125"
-       sodipodi:nodetypes="cccccccccc" />
+       d="m 124.4472,161.94943 c 0,8.23005 -6.67177,13.31431 -14.90182,13.31431 -8.02096,-0.60283 -12.489314,-4.04432 -19.843754,-4.13905 -8.23005,0 -14.901811,5.08427 -14.901811,13.31432 l -10.58333,-27.78125 c 0,-8.23004 6.8079,-13.44731 15.037941,-13.44731 7.77627,0.10915 12.625009,4.0558 19.707619,4.27204 8.230055,0 14.901825,-5.08426 14.901825,-13.31431 v 0 l 10.58333,27.78125" />
     <g
        aria-label="CTF"
        id="text973"
