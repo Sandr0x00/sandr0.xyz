@@ -158,17 +158,18 @@ parts.append(Part("ctf", "CTF Writeups", f"""
 
 web_data = [
   # website, description, file
-  ["https://www.michael-konstantin.de", "Michael Konstantin", "michael-konstantin"],
-  ["https://almenrausch-pirkhof.de", "Almenrausch Pirkhof Schützenverein Pirkhof", "almenrausch-pirkhof"],
-  ["http://juliagruber.de", "Julia Gruber", "juliagruber"],
-  ["https://doktor-eisenbarth.de", "Doktor Eisenbarth Festspielverein Oberviechtach", "doktor-eisenbarth"],
+  ["https://www.michael-konstantin.de", "Web Development for Michael Konstantin", "michael-konstantin.jpg"],
+  ["https://almenrausch-pirkhof.de", "Web Development for Almenrausch Pirkhof Schützenverein Pirkhof", "almenrausch-pirkhof.jpg"],
+  ["http://juliagruber.de", "Web Development for Julia Gruber", "juliagruber.jpg"],
+  ["https://doktor-eisenbarth.de", "Web Development for Doktor Eisenbarth Festspielverein Oberviechtach", "doktor-eisenbarth.jpg"],
+  ["/2023_pentest_report_redacted.pdf", "Redacted Pentest Report in 2023", "2023-pentest-report-redacted.png"]
 ]
 
 content = ""
 for i in web_data:
   domain, description, file_name = i
   fallback, sizes = resize(file_name)
-  content += f"""<a class="client-work" href="{domain}" title="Website for {description}">
+  content += f"""<a class="client-work" href="{domain}" title="{description}">
 <img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" class="client-work" src="{fallback}" alt="{file_name}" srcset="{sizes}">
 </a>"""
 
