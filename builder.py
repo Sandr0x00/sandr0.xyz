@@ -66,7 +66,6 @@ img = re.sub(r"<svg",f'<svg class="sandr0"',img)
 about_data = [
   '<a href="https://hxp.io" title="hxp"><img src="/icon_hxp.webp" alt="hxp logo"></a>',
   '<a class="kompilers" href="https://kompilers.com/" title="kompilers">k</a>',
-  '<a href="mailto:freelancing@sandr0.xyz" title="Hire me as a freelancer"><i class="fas fa-laptop-code fa-2x"></i></a>',
   '<a href="https://github.com/Sandr0x00" title="Github"><img src="/github.svg" alt="GitHub logo"></a>',
   '<a href="https://www.linkedin.com/in/sandr0x00/" title="LinkedIn"><img src="/linkedin.png" alt="LinkedIn logo"></a>',
   '<a href="https://twitter.com/Sandr0x00" title="Twitter"><img src="/twitter.svg" alt="Twitter logo"></a>',
