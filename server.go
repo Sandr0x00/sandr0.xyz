@@ -23,9 +23,11 @@ import (
 	"golang.org/x/crypto/acme/autocert"
 )
 
-type Users struct {
+type Config struct {
 	Users []User `json:"users"`
+	Subdomains map[string]string `json:"subdomains"`
 }
+var config Config
 
 type User struct {
 	Name     string   `json:"name"`
@@ -39,14 +41,34 @@ func must(err error) {
 	}
 }
 
-var subDomains = map[string]string{
-	"recipes.sandr0.xyz":        "http://localhost:8082",
-	"series-tracker.sandr0.xyz": "http://localhost:8083",
+type NoListFile struct {
+	http.File
+}
+
+func (f NoListFile) Readdir(count int) ([]os.FileInfo, error) {
+	return nil, nil
+}
+
+type NoListFileSystem struct {
+	base http.FileSystem
+}
+
+// fix file listing and null bytes in paths causing 500 - server error
+func (fs NoListFileSystem) Open(name string) (http.File, error) {
+	fmt.Printf("Open %v %v %v\n", name, []byte(name), name[len(name)-1:])
+	name = strings.Replace(name, "\x00", "", -1)
+	fmt.Printf("Open %v\n", name)
+	f, err := fs.base.Open(name)
+	if err != nil {
+		fmt.Printf("failed %v\n", err)
+		return nil, err
+	}
+	return NoListFile{f}, nil
 }
 
 // Serve a reverse proxy for a given url
 var proxyHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	target, ok := subDomains[r.Host]
+	target, ok := config.Subdomains[r.Host]
 	if !ok {
 		return
 	}
@@ -111,6 +133,36 @@ var mijiaProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, fmt.Sprintf("%s", body))
 })
 
+func reloadConfig() {
+	// config file
+	jsonFile, err := os.Open("config.json")
+	// handle errors
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+
+	// read our opened jsonFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	// unmarshal array into 'config'
+	err = json.Unmarshal(byteValue, &config)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+}
+
+var reloadConfigHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	reloadConfig()
+
+	w.Header().Add("Content-Type", "text/plain; charset=UTF-8")
+	w.Header().Add("Connection", "close")
+	fmt.Fprint(w, "reloaded")
+})
+
 func filteredSearchOfDirectoryTree(re *regexp.Regexp, dir string, w http.ResponseWriter) error {
 	walk := func(fn string, fi os.FileInfo, err error) error {
 		if !re.MatchString(fn) {
@@ -127,26 +179,9 @@ func filteredSearchOfDirectoryTree(re *regexp.Regexp, dir string, w http.Respons
 func auth(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		// Authenticated users
-		jsonFile, err := os.Open("secured.json")
-		// handle errors
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		// defer the closing of our jsonFile so that we can parse it later on
-		defer jsonFile.Close()
-
-		// read our opened jsonFile as a byte array.
-		byteValue, _ := ioutil.ReadAll(jsonFile)
-
-		// unmarshal array into 'users'
-		var users Users
-		json.Unmarshal(byteValue, &users)
-
 		user, pass, _ := r.BasicAuth()
 
-		for _, valid := range users.Users {
+		for _, valid := range config.Users {
 			if valid.Name != user || valid.Password != pass {
 				// something is not correct
 				w.Header().Set("WWW-Authenticate", `Basic`)
@@ -193,6 +228,7 @@ func cacheZipMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
+	reloadConfig()
 	secureMiddleware := secure.New(secure.Options{
 		AllowedHosts:          []string{"sandr0\\.xyz", ".*\\.sandr0\\.xyz"},
 		AllowedHostsAreRegex:  true,
@@ -222,7 +258,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// subdomains
-	for key, _ := range subDomains {
+	for key, _ := range config.Subdomains {
 		r.Host(key).Handler(proxyHandler)
 	}
 
@@ -230,9 +266,10 @@ func main() {
 	r.Handle("/secured", Redirect("/secured/"))
 	r.PathPrefix("/secured/").Handler(http.StripPrefix("/secured/", auth(cacheZipMiddleware(http.FileServer(http.Dir("secured"))))))
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", cacheZipMiddleware(http.FileServer(http.Dir("shared")))))
+	r.Handle("/config", reloadConfigHandler)
 	r.Handle("/cal", calProxy)
 	r.Handle("/mijia", mijiaProxy)
-	r.PathPrefix("/").Handler(secureMiddleware.Handler(cacheZipMiddleware(http.FileServer(http.Dir("static")))))
+	r.PathPrefix("/").Handler(secureMiddleware.Handler(cacheZipMiddleware(http.FileServer(NoListFileSystem{http.Dir("static")}))))
 	// logger logs also subdomains
 	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))
 
