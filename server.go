@@ -55,12 +55,9 @@ type NoListFileSystem struct {
 
 // fix file listing and null bytes in paths causing 500 - server error
 func (fs NoListFileSystem) Open(name string) (http.File, error) {
-	fmt.Printf("Open %v %v %v\n", name, []byte(name), name[len(name)-1:])
 	name = strings.Replace(name, "\x00", "", -1)
-	fmt.Printf("Open %v\n", name)
 	f, err := fs.base.Open(name)
 	if err != nil {
-		fmt.Printf("failed %v\n", err)
 		return nil, err
 	}
 	return NoListFile{f}, nil
@@ -193,7 +190,6 @@ func auth(handler http.Handler) http.Handler {
 			if requestFile != "" {
 				for _, curFile := range valid.Files {
 					re := regexp.MustCompile(curFile)
-					fmt.Println("%v", re)
 					if re.MatchString(requestFile) {
 						fmt.Printf("matched: %v", requestFile)
 						if !strings.HasSuffix(requestFile, "html") {
