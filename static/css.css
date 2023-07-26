@@ -1,22 +1,28 @@
-html {
+:root {
+    --background: #00060e;
+    --background-code: #10161e;
+    --main: #1a84ff;
 }
 
-body{
+@font-face {
+    font-family: 'DejaVu Sans';
+    src: url(/DejaVuSans.ttf);
 }
 
-a:visited,a {
+a:visited,
+a {
     text-decoration: none;
 }
 
 body {
     display: grid;
-    grid-template-columns: minmax(0,1fr) 50px;
+    grid-template-columns: minmax(0, 1fr) 50px;
     padding: 10px;
     margin: 0;
 }
 
 * {
-    font-family: sans-serif;
+    font-family: 'DejaVu Sans', sans-serif;
 }
 
 main {
@@ -33,13 +39,15 @@ nav {
     position: relative;
     padding-left: 10px;
 }
+
 .nav {
     position: sticky;
     top: 2.5rem;
 }
+
 /* .nav-item {
 } */
-.nav-item svg{
+.nav-item svg {
     width: 100%;
     height: auto;
 }
@@ -49,14 +57,17 @@ nav {
     height: 100%;
     max-height: 2rem;
 }
+
 .sandr0 {
     height: 1em;
     width: auto;
 }
+
 .right {
     grid-column: span 2;
     text-align: right;
 }
+
 .hidden {
     color: transparent !important;
 }
@@ -64,16 +75,22 @@ nav {
 img.client-work {
     width: 100%;
 }
+
 a.client-work {
     text-decoration: none;
+}
+
+.footnote {
+    padding-left: 0.5em;
 }
 
 @media (min-width: 576px) {
     img.client-work {
         width: 49%;
     }
+
     body {
-        grid-template-columns: minmax(0,1fr) 70px;
+        grid-template-columns: minmax(0, 1fr) 70px;
     }
 }
 
@@ -81,8 +98,9 @@ a.client-work {
     img.client-work {
         width: 49%;
     }
+
     body {
-        grid-template-columns: minmax(0,1fr) 100px;
+        grid-template-columns: minmax(0, 1fr) 100px;
     }
 }
 
@@ -117,7 +135,8 @@ h3 img {
     vertical-align: middle;
 }
 
-#about img, #about i {
+#about img,
+#about i {
     display: inline-block;
     height: 2rem;
     margin: 0 0.5rem;
@@ -129,65 +148,121 @@ h3 img {
     font-size: 2rem;
 }
 
-.post > img {
+.post>img {
     display: inline-block;
     width: 2rem;
     height: 2rem;
     margin: 0 0.5rem;
     vertical-align: middle;
 }
-.post > strong {
+
+.post>strong {
     position: absolute;
     left: 3rem;
 }
-.post > p {
+
+.post>p {
     margin-left: 3rem;
     margin-top: 0;
     margin-bottom: 0;
 }
+
 .post {
     margin-bottom: 2rem;
 }
 
 @font-face {
-    font-family:Source Code Pro;
-    font-style:normal;
-    font-weight:400;
-    font-display:swap;
-    src:url(code.woff2) format("woff2");
-    unicode-range:u+00??,
-    u+0131,
-    u+0152-0153,
-    u+02bb-02bc,
-    u+02c6,
-    u+02da,
-    u+02dc,
-    u+2000-206f,
-    u+2074,
-    u+20ac,
-    u+2122,
-    u+2191,
-    u+2193,
-    u+2212,
-    u+2215,
-    u+feff,
-    u+fffd
+    font-family: Source Code Pro;
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(code.woff2) format("woff2");
+    unicode-range: u+00??,
+        u+0131,
+        u+0152-0153,
+        u+02bb-02bc,
+        u+02c6,
+        u+02da,
+        u+02dc,
+        u+2000-206f,
+        u+2074,
+        u+20ac,
+        u+2122,
+        u+2191,
+        u+2193,
+        u+2212,
+        u+2215,
+        u+feff,
+        u+fffd
 }
 
-a.kompilers,a.kompilers:visited {
-    font-family:Source Code Pro,ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;
+a.kompilers,
+a.kompilers:visited {
+    font-family: Source Code Pro, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
     color: #00ff75;
     text-decoration: none;
 }
+
 .kompilers:after {
-    content:"_";
-    animation:blink 1.2s steps(2) infinite;
+    content: "_";
+    animation: blink 1.2s steps(2) infinite;
 }
+
 @keyframes blink {
     0% {
-        visibility:hidden;
+        visibility: hidden;
     }
+
     to {
-        visibility:visible;
+        visibility: visible;
     }
+}
+
+body {
+    color: #dddddd;
+    background-color: var(--background)
+}
+
+.highlight {
+    fill: var(--main);
+}
+
+a:visited,
+a {
+    color: var(--main);
+    cursor: pointer;
+}
+
+blockquote {
+    background: var(--background-code);
+    quotes: "\201C" "\201D" "\2018" "\2019";
+    margin-left: 0;
+    padding: 10px;
+}
+
+blockquote:before {
+    color: var(--main);
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    vertical-align: -0.4em;
+}
+
+blockquote p {
+    display: inline;
+}
+
+pre {
+    padding: 10px;
+}
+pre span {
+    font-family: Source Code Pro, monospace;
+}
+
+code {
+    padding: 1px 5px;
+    font-family: Source Code Pro, monospace;
+}
+pre, code {
+    background: var(--background-code);
 }

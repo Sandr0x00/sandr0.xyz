@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block main %}
+    {% for part in parts %}
+        <div class="section" id="{{part.id}}">
+            <h2>{{part.title}}</h2>
+            <div>
+                {% if part.id == 'about' %}
+                    I'm a freelance developer / hacker who plays CTF in his spare time.<br/><br/>
+                    {{ part.data|join(" | ") }}
+                {% elif part.id == 'blog' %}
+                    {% for d in part.data %}
+                        <div class="post">
+                            <strong><a href="/blog/{{d.post}}" title="{{d.title}}">{{d.title}}</a></strong><br/>
+                            <p class="desc">{{d.html}}</p>
+                        </div>
+                    {% endfor %}
+                {% elif part.id == 'projects' %}
+                    {% for d in part.data %}
+                        <a class="client-work" href="{{d.domain}}" title="{{d.desc}}">
+                            <img sizes="(min-width: 576px) 50vw, (min-width: 1200px) 33vw, 100vw" src="{{d.fallback}}" class="client-work" alt="{{d.file}}" srcset="{{d.sizes}}">
+                        </a>
+                    {% endfor %}
+                {% elif part.id == 'ctf' %}
+                <p>
+                    <h3>Stuff I created for <a href="https://ctf.link" title="hxp CTF"><img src="/icon_hxp-ctf.webp" alt="hxp CTF logo"></a></h3>
+                    {% for d in part.data[0] %}
+                        <div class="post">
+                            {% if d.cat %}
+                                <img src="/icon_{{d.cat}}.webp" alt="hxp CTF icon for {{d.cat}} challenges">
+                            {% endif %}
+                            <strong>{{d.name}}</strong>
+                            <br/>
+                            <p class="desc">{{d.desc}}</p>
+                        </div>
+                    {% endfor %}
+
+                    <h3>Stuff I broke with <a href="https://hxp.io" title="hxp"><img src="/icon_hxp.webp" alt="hxp logo"></a> (excerpt)</h3>
+                    {% for d in part.data[1] %}
+                        <div class="post">
+                            {% if d.cat %}
+                                <img src="/icon_{{d.cat}}.webp" alt="hxp CTF icon for {{d.cat}} challenges">
+                            {% endif %}
+                            <strong>{{d.name}}</strong>
+                            <br/>
+                            <p class="desc">{{d.desc}}</p>
+                        </div>
+                    {% endfor %}
+                </p>
+                {% elif part.id == 'fun' %}
+                    <p>Don't like the style of my website? Redesign it yourself!</p>
+                    <style style="display:block; background-color: #444; padding:.5em; font-family: monospace;" contenteditable="">
+                    body{
+                    color:#dddddd;
+                    background-color:#00060e
+                    }
+                    .highlight {
+                    fill: #1a84ff
+                    }
+                    a:visited,a {
+                    color: #1a84ff
+                    }
+                    </style><br>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+
+
+{% endblock %}
+
+{% block nav %}
+    <nav class="grid-nav"><div class="nav">
+
+    {% for part in parts %}
+        <a class="nav-item" href="#{{part.id}}" title="{{part.title}}">{{part.img}}</a>
+    {% endfor %}
+
+    </div></nav>
+{% endblock %}
+

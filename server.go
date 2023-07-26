@@ -16,7 +16,6 @@ import (
 	"github.com/NYTimes/gziphandler"
 	"path/filepath"
 	"io/ioutil"
-
 	"github.com/go-http-utils/logger"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/secure"
@@ -261,7 +260,7 @@ func main() {
 	// paths
 	r.Handle("/secured", Redirect("/secured/"))
 	r.PathPrefix("/secured/").Handler(http.StripPrefix("/secured/", auth(cacheZipMiddleware(http.FileServer(http.Dir("secured"))))))
-	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", cacheZipMiddleware(http.FileServer(http.Dir("shared")))))
+	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", cacheZipMiddleware(http.FileServer(NoListFileSystem{http.Dir("shared")}))))
 	r.Handle("/config", reloadConfigHandler)
 	r.Handle("/cal", calProxy)
 	r.Handle("/mijia", mijiaProxy)
