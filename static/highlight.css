@@ -2,7 +2,7 @@
   --color-string: #f8bd4f;
   --color-keyword: #C678DD;
 }
-.highlight .hll { background-color: #404040 }
+.highlight .hll { background-color: #1a84ff44 }
 .highlight .c { color: #999999; font-style: italic } /* Comment */
 .highlight .err { color: #a61717; background-color: #e3d2d2 } /* Error */
 .highlight .esc { color: #d0d0d0 } /* Escape */

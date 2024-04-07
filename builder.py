@@ -137,8 +137,13 @@ class BlogData:
 blog_data = [
     BlogData(
         "01-pentest-report",
-        "Redacted Pentest Report of a PHP web app",
-        f"""In February 2023, I got hired to do a whitebox pentest of a PHP web app. The redacted report can be found here {lnk("/blog/01-pentest-report/pentest_report_redacted.pdf", "[PDF]")}."""
+        "Redacted Pentest Report of a PHP Web App",
+        f"""In February 2023, I got hired to do a whitebox pentest of a PHP web app. The redacted report can be found here {lnk("/blog/01-pentest-report/pentest_report_redacted.pdf", "[PDF]")}.""",
+    ),
+    BlogData(
+        "02-archiva",
+        "Technical Writeup for CVE-2023-28158",
+        f"""In March 2023, I got the opportunity to identify and report a stored XSS vulnerability in {lnk("https://archiva.apache.org/", "Apache Archiva 2.2.9")}. The vulnerability got awarded {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158", "CVE-2023-28158")}.""",
     ),
 ]
 
@@ -193,11 +198,6 @@ web_data = [
         "https://almenrausch-pirkhof.de",
         "Web Development for Almenrausch Pirkhof Schützenverein Pirkhof",
         "almenrausch-pirkhof.jpg"
-    ),
-    ProjectData(
-        "https://juliagruber.de",
-        "Web Development for Julia Gruber",
-        "juliagruber.jpg"
     ),
     # <a href="https://schreiner-suess.de" title="Website for Schreinerei Andreas Süß Fuchsberg"><img class="client-work" src="schreiner-suess.png" alt="schreiner-suess"></a>
 ]
@@ -279,8 +279,15 @@ class HighlightRenderer(mistune.HTMLRenderer):
 
     def block_code(self, code, info=None):
         if info:
+            print(code)
+            highlighted_rows = []
+            for c, l in enumerate(code.splitlines()):
+                if l.startswith("!!"):
+                    highlighted_rows.append(c + 1)
+            code = code.replace("!!", "")
+            print(highlighted_rows)
             lexer = get_lexer_by_name(info, stripall=True)
-            formatter = html.HtmlFormatter()
+            formatter = html.HtmlFormatter(linenos="table", hl_lines=highlighted_rows)
             return highlight(code, lexer, formatter)
         return '<pre><code>' + mistune.escape(code) + '</code></pre>'
 

@@ -41,8 +41,13 @@
 {% endblock %}
   </main>
 
-{% block nav %}
-{% endblock %}
+  <nav class="grid-nav"><div class="nav">
+
+    {% for part in parts %}
+        <a class="nav-item" href="/#{{part.id}}" title="{{part.title}}">{{part.img}}</a>
+    {% endfor %}
+
+    </div></nav>
 
 </body>
 

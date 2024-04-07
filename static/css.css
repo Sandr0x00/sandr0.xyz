@@ -236,28 +236,41 @@ a {
 blockquote {
     background: var(--background-code);
     quotes: "\201C" "\201D" "\2018" "\2019";
-    margin-left: 0;
+    margin: 0;
     padding: 10px;
 }
 
 blockquote:before {
     color: var(--main);
     content: open-quote;
-    font-size: 4em;
-    line-height: 0.1em;
-    vertical-align: -0.4em;
+    font-size: 3em;
+    line-height: 1em;
 }
 
 blockquote p {
-    display: inline;
+    display: inline-block;
+    margin: 0;
 }
 
 pre {
     padding: 10px;
+    overflow: scroll;
 }
 pre span {
     font-family: Source Code Pro, monospace;
 }
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+.linenos {
+    width: min-content;
+    text-align: right;
+}
+/* .linenos::after {
+    content: " | ";
+    color: #777;
+} */
 
 code {
     padding: 1px 5px;
