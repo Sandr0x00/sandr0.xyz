@@ -129,18 +129,21 @@ parts.append(Part("about", "About", about_data))
 #===========================================================
 
 class BlogData:
-    def __init__(self, post, title, html):
+    def __init__(self, date, post, title, html):
+        self.date = date
         self.post = post
         self.title = title
         self.html = html
 
 blog_data = [
     BlogData(
+        "2023-08-01",
         "01-pentest-report",
         "Redacted Pentest Report of a PHP Web App",
         f"""In February 2023, I got hired to do a whitebox pentest of a PHP web app. The redacted report can be found here {lnk("/blog/01-pentest-report/pentest_report_redacted.pdf", "[PDF]")}.""",
     ),
     BlogData(
+        "2024-04-07",
         "02-archiva",
         "Technical Writeup for CVE-2023-28158",
         f"""In March 2023, I got the opportunity to identify and report a stored XSS vulnerability in {lnk("https://archiva.apache.org/", "Apache Archiva 2.2.9")}. The vulnerability got awarded {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158", "CVE-2023-28158")}.""",

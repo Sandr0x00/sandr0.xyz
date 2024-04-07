@@ -11,6 +11,7 @@
                     {% for d in part.data %}
                         <div class="post">
                             <strong><a href="/blog/{{d.post}}" title="{{d.title}}">{{d.title}}</a></strong><br/>
+                            <p><small>{{d.date}}</small></p>
                             <p class="desc">{{d.html}}</p>
                         </div>
                     {% endfor %}
