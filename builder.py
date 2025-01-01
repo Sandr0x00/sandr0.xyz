@@ -16,6 +16,7 @@ import shutil
 tmpl_env = jinja2.Environment(
     loader=jinja2.FileSystemLoader("templates")
 )
+output_dir = pathlib.Path("static")
 
 class Part():
 
@@ -138,13 +139,13 @@ class BlogData:
 blog_data = [
     BlogData(
         "2023-08-01",
-        "01-pentest-report",
+        "2023-08-pentest-report",
         "Redacted Pentest Report of a PHP Web App",
-        f"""In February 2023, I got hired to do a whitebox pentest of a PHP web app. The redacted report can be found here {lnk("/blog/01-pentest-report/pentest_report_redacted.pdf", "[PDF]")}.""",
+        f"""In February 2023, I got hired to do a whitebox pentest of a PHP web app. The redacted report can be found here {lnk("/blog/2023-08-pentest-report/pentest_report_redacted.pdf", "[PDF]")}.""",
     ),
     BlogData(
         "2024-04-07",
-        "02-archiva",
+        "2024-04-archiva",
         "Technical Writeup for CVE-2023-28158",
         f"""In March 2023, I got the opportunity to identify and report a stored XSS vulnerability in {lnk("https://archiva.apache.org/", "Apache Archiva 2.2.9")}. The vulnerability got awarded {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158", "CVE-2023-28158")}.""",
     ),
@@ -219,18 +220,22 @@ class CtfData:
         self.desc = desc
 
 ctf = ([
+    CtfData("NeedForSpeed", "msc",
+    f"""A miscellaneous challenge for {lnk("https://2024.ctf.link","hxp CTF 2024")} focusing on insecure default behaviour of the {lnk("https://en.wikipedia.org/wiki/Network_File_System", "Network File System")} server. The challenge was created as a collaboration with {lnk("https://github.com/philipp-tg", "philipp-tg")} and {lnk("https://github.com/edermi", "edermi")}. [{lnk("https://2024.ctf.link/internal/challenge/b964e61c-5d98-41b9-9f3a-1bb129e6ce24/","challenge")}, {lnk("https://hxp.io/blog/111/","writeup")}, {lnk("https://www.hvs-consulting.de/en/nfs-security-identifying-and-exploiting-misconfigurations/", "further research")}]"""),
+    CtfData("HaRlEm ShAkE", "rev",
+    f"""A Rust reversing challenge for {lnk("https://2024.ctf.link","hxp CTF 2024")} focusing on funny and weird X11 features. [{lnk("https://2024.ctf.link/internal/challenge/168a3050-bd0b-4053-930a-366d0fe82294/","challenge")}, {lnk("https://hxp.io/blog/112/","writeup")}]"""),
     CtfData("archived", "zaj",
-    f"""A zero-day web challenge for {lnk("https://2022.ctf.link","hxp CTF 2022")} targeting Apache Archiva 2.2.9. The challenge is based on a vulnerability I discovered which was assigned {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158","CVE-2023-28158")}. [{lnk("https://2022.ctf.link/internal/challenge/b2ca2268-f49f-4103-9943-2a417244a955","challenge")}, {lnk("https://hxp.io/blog/100/hxp-CTF-2022-archived/","writeup")}]"""),
+    f"""A zero-day web challenge for {lnk("https://2022.ctf.link","hxp CTF 2022")} targeting Apache Archiva 2.2.9. The challenge is based on a vulnerability I discovered which was assigned {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158","CVE-2023-28158")}. [{lnk("https://2022.ctf.link/internal/challenge/b2ca2268-f49f-4103-9943-2a417244a955","challenge")}, {lnk("https://hxp.io/blog/100/","writeup")}]"""),
     CtfData("required", "rev",
-    f"""A challenge for {lnk("https://2022.ctf.link","hxp CTF 2022")} using the prototype pollution discussed in the challenge {lnk("https://ctf.zeyu2001.com/2022/balsnctf-2022/2linenodejs","2linenodejs")} as a way to obfuscate NodeJS code. [{lnk("https://2022.ctf.link/internal/challenge/7e3e425c-865d-4025-9005-09806d951cca","challenge")}, {lnk("https://hxp.io/blog/103/hxp-CTF-2022-required/","writeup")}]"""),
+    f"""A challenge for {lnk("https://2022.ctf.link","hxp CTF 2022")} using the prototype pollution discussed in the challenge {lnk("https://ctf.zeyu2001.com/2022/balsnctf-2022/2linenodejs","2linenodejs")} as a way to obfuscate NodeJS code. [{lnk("https://2022.ctf.link/internal/challenge/7e3e425c-865d-4025-9005-09806d951cca","challenge")}, {lnk("https://hxp.io/blog/103/","writeup")}]"""),
     CtfData("sqlite_web", "web",
-    f"""A web challenge for {lnk("https://2022.ctf.link","hxp CTF 2022")} focusing on a insecure design choice in {lnk("https://github.com/coleifer/sqlite-web","sqlite-web")} leading to remote code execution. {lnk("https://github.com/coleifer/sqlite-web/issues/111","Remains unfixed.")} [{lnk("https://2022.ctf.link/internal/challenge/dbb4626c-3390-43d2-88bf-4d4c22c33315","challenge")}, {lnk("https://hxp.io/blog/102/hxp-CTF-2022-sqlite_web/","writeup")}]"""),
+    f"""A web challenge for {lnk("https://2022.ctf.link","hxp CTF 2022")} focusing on a insecure design choice in {lnk("https://github.com/coleifer/sqlite-web","sqlite-web")} leading to remote code execution. {lnk("https://github.com/coleifer/sqlite-web/issues/111","Remains unfixed.")} [{lnk("https://2022.ctf.link/internal/challenge/dbb4626c-3390-43d2-88bf-4d4c22c33315","challenge")}, {lnk("https://hxp.io/blog/102/","writeup")}]"""),
     CtfData("valentine", "web",
-    f"""A web challenge for {lnk("https://2022.ctf.link","hxp CTF 2022")} exploring {lnk("https://github.com/mde/ejs","ejs")} 3.1.8 after {lnk("https://eslam.io/posts/ejs-server-side-template-injection-rce/","CVE-2022-29078")} was fixed. [{lnk("https://2022.ctf.link/internal/challenge/8f5b680d-d57a-4609-94e9-37593f9d4f2a","challenge")}, {lnk("https://hxp.io/blog/101/hxp-CTF-2022-valentine/","short writeup")}, {lnk("https://github.com/ispoleet/ctf-writeups/tree/master/hxp_ctf_2022/required","extended writeup")}]"""),
+    f"""A web challenge for {lnk("https://2022.ctf.link","hxp CTF 2022")} exploring {lnk("https://github.com/mde/ejs","ejs")} 3.1.8 after {lnk("https://eslam.io/posts/ejs-server-side-template-injection-rce/","CVE-2022-29078")} was fixed. [{lnk("https://2022.ctf.link/internal/challenge/8f5b680d-d57a-4609-94e9-37593f9d4f2a","challenge")}, {lnk("https://hxp.io/blog/101/","short writeup")}, {lnk("https://github.com/ispoleet/ctf-writeups/tree/master/hxp_ctf_2022/required","extended writeup")}]"""),
     CtfData("baba is you", "msc",
     f"""A misc challenge for {lnk("https://2021.ctf.link","hxp CTF 2021")} inspired by {lnk("https://hempuli.com/baba/","baba is you")} written in C for Gameboy. [{lnk("https://2021.ctf.link/internal/challenge/52c2a607-7e05-456f-b8c0-68952304f2a4/","challenge")}, {lnk("https://baba.hxp.io/","scoreboard")}, {lnk("https://github.com/Sandr0x00/gameboy-is-you/blob/","source")}, {lnk("https://github.com/Sandr0x00/gameboy-is-you/blob/main/writeup/readme.md","writeup")}]"""),
     CtfData("find the chicken", "msc",
-    f"""A gameboy challenge for {lnk("https://2020.ctf.link","hxp CTF 2020")} written in C. Reverse the game and find the chicken. [{lnk("https://2020.ctf.link/internal/challenge/7e09f315-2f7b-4f0a-bcaf-934cc298e263/","challenge")}, {lnk("https://chicken.hxp.io/","scoreboard")}, {lnk("https://github.com/Sandr0x00/find-the-chicken","source")}, {lnk("https://hxp.io/blog/80/hxp-CTF-2020-find-the-chicken","solution run")}]"""),
+    f"""A gameboy challenge for {lnk("https://2020.ctf.link","hxp CTF 2020")} written in C. Reverse the game and find the chicken. [{lnk("https://2020.ctf.link/internal/challenge/7e09f315-2f7b-4f0a-bcaf-934cc298e263/","challenge")}, {lnk("https://chicken.hxp.io/","scoreboard")}, {lnk("https://github.com/Sandr0x00/find-the-chicken","source")}, {lnk("https://hxp.io/blog/80/","solution run")}]"""),
 ],
 [
     CtfData("PDF-Xfiltration", "",
@@ -263,18 +268,19 @@ parts.append(Part("fun", "Fun", ""))
 #===========================================================
 
 img = svg("resources/sandr0.xyz.svg")
-
-# print(img)
 img = re.sub(r"<svg",f'<svg class="logo"',img)
-# print(img)
 
-
+# sandr0.xyz/
 template = tmpl_env.get_template("main.html")
-
-output_dir = pathlib.Path("static")
-
 with open(output_dir / "index.html", "w") as f:
     f.write(template.render(img=img, parts=parts))
+
+# sandr0.xyz/blog
+template = tmpl_env.get_template("blog.html")
+output = output_dir / "blog"
+output.mkdir(parents=True, exist_ok=True)
+with open(output / "index.html", "w") as f:
+    f.write(template.render(img=img, blog_data=blog_data, parts=parts))
 
 class HighlightRenderer(mistune.HTMLRenderer):
     def __init__(self):
@@ -282,29 +288,24 @@ class HighlightRenderer(mistune.HTMLRenderer):
 
     def block_code(self, code, info=None):
         if info:
-            print(code)
+            # print(code)
             highlighted_rows = []
             for c, l in enumerate(code.splitlines()):
                 if l.startswith("!!"):
                     highlighted_rows.append(c + 1)
             code = code.replace("!!", "")
-            print(highlighted_rows)
+            # print(highlighted_rows)
             lexer = get_lexer_by_name(info, stripall=True)
             formatter = html.HtmlFormatter(linenos="table", hl_lines=highlighted_rows)
             return highlight(code, lexer, formatter)
         return '<pre><code>' + mistune.escape(code) + '</code></pre>'
 
-template = tmpl_env.get_template("blog.html")
-output = output_dir / "blog"
-output.mkdir(parents=True, exist_ok=True)
-with open(output / "index.html", "w") as f:
-    f.write(template.render(img=img, blog_data=blog_data, parts=parts))
-
 template = tmpl_env.get_template("blog-post.html")
 markdown = mistune.Markdown(HighlightRenderer(), plugins=[footnotes])
 
+# sandr0.xyz/blog/*
 for root, dirs, files in os.walk("blog"):
-    print(root, dirs, files)
+    # print(root, dirs, files)
     for file in files:
         p = pathlib.Path(root)
         output = output_dir / root
@@ -319,5 +320,4 @@ for root, dirs, files in os.walk("blog"):
         else:
             shutil.copyfile(p / file, output / file)
 
-
-        print(p)
+        # print(p)

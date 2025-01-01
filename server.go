@@ -5,17 +5,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"html"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
-	"regexp"
+
 	"github.com/NYTimes/gziphandler"
-	"path/filepath"
-	"io/ioutil"
 	"github.com/go-http-utils/logger"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/secure"
@@ -23,9 +24,10 @@ import (
 )
 
 type Config struct {
-	Users []User `json:"users"`
+	Users      []User            `json:"users"`
 	Subdomains map[string]string `json:"subdomains"`
 }
+
 var config Config
 
 type User struct {
@@ -105,7 +107,7 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		body, err := ioutil.ReadAll(res.Body)
+		body, err := io.ReadAll(res.Body)
 		res.Body.Close()
 		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
 		w.Header().Add("Connection", "close")
@@ -122,7 +124,7 @@ var mijiaProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	res.Body.Close()
 	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Add("Connection", "close")
@@ -141,7 +143,7 @@ func reloadConfig() {
 	defer jsonFile.Close()
 
 	// read our opened jsonFile as a byte array.
-	byteValue, _ := ioutil.ReadAll(jsonFile)
+	byteValue, _ := io.ReadAll(jsonFile)
 
 	// unmarshal array into 'config'
 	err = json.Unmarshal(byteValue, &config)
@@ -225,19 +227,19 @@ func cacheZipMiddleware(next http.Handler) http.Handler {
 func main() {
 	reloadConfig()
 	secureMiddleware := secure.New(secure.Options{
-		AllowedHosts:          []string{"sandr0\\.xyz", ".*\\.sandr0\\.xyz"},
-		AllowedHostsAreRegex:  true,
+		AllowedHosts:         []string{"sandr0\\.xyz", ".*\\.sandr0\\.xyz"},
+		AllowedHostsAreRegex: true,
 		// HostsProxyHeaders:    []string{"X-Forwarded-Host"},
-		SSLRedirect:           true,
-		SSLHost:               "sandr0.xyz",
+		SSLRedirect: true,
+		SSLHost:     "sandr0.xyz",
 		// SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
-		STSSeconds:            31536000,
-		STSIncludeSubdomains:  true,
-		STSPreload:            true,
-		ForceSTSHeader:        true,
-		FrameDeny:             true,
-		ContentTypeNosniff:    true,
-		BrowserXssFilter:      true,
+		STSSeconds:           31536000,
+		STSIncludeSubdomains: true,
+		STSPreload:           true,
+		ForceSTSHeader:       true,
+		FrameDeny:            true,
+		ContentTypeNosniff:   true,
+		BrowserXssFilter:     true,
 		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Permissions_Policy
 		PermissionsPolicy:     "camera=(), display-capture=(), fullscreen=(), geolocation=(), microphone=(), web-share=()",
 		ContentSecurityPolicy: "default-src 'self'; font-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none';",
