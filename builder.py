@@ -110,11 +110,6 @@ about_data = [
         title="LinkedIn",
     ),
     lnk(
-        "https://twitter.com/Sandr0x00",
-        '<img src="/twitter.svg" alt="Twitter logo">',
-        title="Twitter",
-    ),
-    lnk(
         "https://infosec.exchange/@sandr0",
         '<img src="/mastodon.svg" alt="Mastodon logo">',
         title="Mastodon",
@@ -148,6 +143,12 @@ blog_data = [
         "2024-04-archiva",
         "Technical Writeup for CVE-2023-28158",
         f"""In March 2023, I got the opportunity to identify and report a stored XSS vulnerability in {lnk("https://archiva.apache.org/", "Apache Archiva 2.2.9")}. The vulnerability got awarded {lnk("https://www.cve.org/CVERecord?id=CVE-2023-28158", "CVE-2023-28158")}.""",
+    ),
+    BlogData(
+        "2025-03-15",
+        "2025-03-tirreno",
+        "tirreno - how to respectfully treat researchers",
+        f"""In January 2025, I found an XSS in {lnk("https://tirreno.com", "tirreno")}. The response was objectively the best I ever got to a security report: Quick, high quality and respectful.""",
     ),
 ]
 
