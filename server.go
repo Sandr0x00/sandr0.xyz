@@ -181,10 +181,8 @@ func auth(handler http.Handler) http.Handler {
 
 		for _, valid := range config.Users {
 			if valid.Name != user || valid.Password != pass {
-				// something is not correct
-				w.Header().Set("WWW-Authenticate", `Basic`)
-				http.Error(w, "Unauthorized.", 401)
-				return
+				// wrong user
+				continue
 			}
 
 			requestFile := html.EscapeString(r.URL.Path)
@@ -208,6 +206,9 @@ func auth(handler http.Handler) http.Handler {
 			return
 		}
 
+		w.Header().Set("WWW-Authenticate", `Basic`)
+		http.Error(w, "Unauthorized.", 401)
+		return
 	})
 }
 
