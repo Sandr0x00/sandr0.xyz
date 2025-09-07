@@ -14,8 +14,10 @@ jobs:
 
             - name: Set up uv
               uses: astral-sh/setup-uv@v6
-              with:
-                  python-version: "3.x"
+
+            - name: Set up Python
+              run: uv python install
+
             - run: uv sync --locked --all-extras
 
             - name: Set up Go
