@@ -1,0 +1,5 @@
+Contact: mailto:mail @ this domain
+Expires: 2027-12-31T23:00:00.000Z
+Encryption: https://sandr0.xyz/328179BC7013805C.asc
+Preferred-Languages: en, de
+Canonical: https://sandr0.xyz/.well-known/security.txt
