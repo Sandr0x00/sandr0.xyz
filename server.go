@@ -117,20 +117,6 @@ var calProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	}
 })
 
-var mijiaProxy = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	res, err := http.Get(os.Getenv("MIJIA"))
-	if err != nil {
-		fmt.Println(err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	body, err := io.ReadAll(res.Body)
-	res.Body.Close()
-	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Add("Connection", "close")
-	fmt.Fprint(w, fmt.Sprintf("%s", body))
-})
-
 func reloadConfig() {
 	// config file
 	jsonFile, err := os.Open("config.json")
@@ -266,7 +252,6 @@ func main() {
 	r.PathPrefix("/shared/").Handler(http.StripPrefix("/shared/", cacheZipMiddleware(http.FileServer(NoListFileSystem{http.Dir("shared")}))))
 	r.Handle("/config", reloadConfigHandler)
 	r.Handle("/cal", calProxy)
-	r.Handle("/mijia", mijiaProxy)
 	r.PathPrefix("/").Handler(secureMiddleware.Handler(cacheZipMiddleware(http.FileServer(NoListFileSystem{http.Dir("static")}))))
 	// logger logs also subdomains
 	http.Handle("/", logger.Handler(r, accessLog, logger.CombineLoggerType))

@@ -6,6 +6,8 @@
             <div>
                 {% if part.id == 'about' %}
                     I'm a freelance developer / hacker who plays CTF in his spare time.<br/><br/>
+                    Mail: mail @ this domain
+                    PGP: <a href="/328179BC7013805C.asc">F92B EDE7 9FEB 3815 CDE4 6BFA 3281 79BC 7013 805C</a><br/><br/>
                     {{ part.data|join(" | ") }}
                 {% elif part.id == 'blog' %}
                     {% for d in part.data %}
