@@ -1,32 +1,32 @@
 name: GO
 
 on:
-    push:
-        branches: ["master"]
-    pull_request:
-        branches: ["master"]
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-            - name: Set up uv
-              uses: astral-sh/setup-uv@v6
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
 
-            - name: Set up Python
-              run: uv python install
+      - name: Set up Python
+        run: uv python install
 
-            - run: uv sync --locked --all-extras
+      - run: uv sync --locked --all-extras
 
-            - name: Set up Go
-              uses: actions/setup-go@v3
-              with:
-                  go-version: 1.22
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.22
 
-            - name: Build Server
-              run: go build -v server.go
+      - name: Build Server
+        run: go build -v main.go
 
-            - name: Build Content
-              run: uv run builder.py
+      - name: Build Content
+        run: uv run builder.py
