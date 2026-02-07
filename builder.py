@@ -182,11 +182,6 @@ web_data = [
         file="recipes.jpg"
     ),
     ProjectData(
-        domain="https://series-tracker.sandr0.xyz",
-        desc="The status of my series",
-        file="series.jpg"
-    ),
-    ProjectData(
         domain="https://github.com/Sandr0x00/find-the-chicken",
         desc="Gameboy CTF challenge for hxp CTF 2020",
         file="find-the-chicken.png"
